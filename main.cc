@@ -8,6 +8,8 @@ using namespace cv;
 int main()
 {
     string image_path = "data_analog_clocks/samples/1.jpg";
+    ClockDetection clockDetector(image_path);
+
     Mat img = imread(image_path, IMREAD_COLOR);
 
     if (img.empty())
@@ -15,9 +17,6 @@ int main()
         cout << "Could not read the image: " << image_path << endl;
         return 1;
     }
-
-    // Create an instance of ClockDetection
-    ClockDetection clockDetector;
 
     // Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);

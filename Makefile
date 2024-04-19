@@ -10,7 +10,9 @@
 
 
 #FLAGS
-C++FLAG = -g -std=c++17
+# C++FLAG = -g -std=c++17
+C++FLAG = -g -std=c++11
+
 
 MATH_LIBS = -lm
 
