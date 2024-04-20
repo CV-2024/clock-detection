@@ -26,8 +26,8 @@ int main()
     int maxRadius = grayImage.cols;
     int minDist = 50;
     int radius = 50;
-    int param1 = 45; 
-    int param2 = 45;
+    int param1 = 100; 
+    int param2 = 30;
     int dp = 1; // the steps
     while (true){
         // Step 3: Detect circles with Hough Circle 
