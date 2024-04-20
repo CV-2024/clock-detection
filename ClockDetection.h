@@ -19,12 +19,18 @@ class ClockDetection {
         */
         cv::Mat convertToGray(const cv::Mat& inputImage);
 
+
         /*
         @brief Detect circles in a grayscale image using Hough Circle Transformation
-        @param const cv::Mat& - grayscale image
-        @return vector<cv::Vec3f> - detected circles (center coordinates and radius)
+        @param grayImage - Grayscale image
+        @param dp - a ingter that is an inverse ratio. It essentially controls the resolution of the accumulator relative to the resolution of the input image. 
+        @param minDist - a ingter that specifies the minimum distance between the centers of the detected circles.
+        @param param1 - a ingter that is the higher threshold,for HOUGH_GRADIENT. The lower threshold is twice smaller.
+        @param param2 - a ingter that is the accumulator threshold for the circle centers at the detection stage.
+        @param minRadius - Minimum radius to start the search
+        @return Detected circles (center coordinates and radius)
         */
-        vector<Vec3f> detectCircles(const cv::Mat& grayImage);
+       vector<Vec3f> detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius);
 };
 
 #endif /* CLOCK_DETECTION_H */

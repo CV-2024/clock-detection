@@ -8,7 +8,10 @@ cv::Mat ClockDetection::convertToGray(const cv::Mat& inputImage) {
     return grayImage;
 }
 
-
-vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage){
-
+vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius){
+    vector<Vec3f> circles;
+    // Detect circles using Hough Circle Transformation
+    HoughCircles(grayImage, circles, HOUGH_GRADIENT, dp, minDist, param1, param2, minRadius, maxRadius);
+    return circles;
 }
+
