@@ -50,7 +50,6 @@ int main()
             Mat edges;
             Canny(grayImage, edges, 50, 100, 3, true);
             imshow("canvasOutput", edges);
-            // int k1 = waitKey(0); // Wait for a keystroke in the window
 
             // Step 5: Use Hough Line Transform to detect lines
             vector<Vec2f> lines;
