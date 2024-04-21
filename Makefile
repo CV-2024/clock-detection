@@ -25,8 +25,8 @@ INCLUDES= -I. -I/usr/local/include/opencv4
 LIBS_ALL = -L/usr/lib -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 
 # Program specifics
-Cpp_OBJ_P1=ClockDetection.o main.o
-PROGRAM_1=main
+Cpp_OBJ_P1=ClockDetection.o p1.o
+PROGRAM_1=p1
 
 # Build program
 $(PROGRAM_1): $(Cpp_OBJ_P1)
@@ -38,4 +38,4 @@ all:
 
 # Clean
 clean:
-	(rm -f *.o;rm main)
+	(rm -f *.o;rm p1)
