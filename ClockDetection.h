@@ -10,6 +10,8 @@ using namespace cv;
 class ClockDetection {
     private:
         string image_path;
+        // vector<Vec3f> circles;
+        // Mat edges;
     public:
         // Default constructor
         ClockDetection(const string& imagePath);
