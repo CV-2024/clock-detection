@@ -26,28 +26,33 @@ int main()
     // Step 2: Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
     
-    int maxRadius = grayImage.cols;
-    int minDist = grayImage.cols;
-    int radius = 1;
+    // int maxRadius = grayImage.cols;
+    int maxRadius = 200;
+    // int minDist = grayImage.cols;
+    int minDist = grayImage.rows / 8;
+    int radius = 10;
     int param1 = 100; 
     int param2 = 30;
     int dp = 1; // the steps for resolution
+
     while (true){
         // Step 3: Detect circles with Hough Circle 
         vector<Vec3f> circles = clockDetector.detectCircles(grayImage, dp, param1, param2, minDist, radius, maxRadius);
         if (circles.size() > 0){
             cout << "Circles detected!" << endl;
-            // Step 3a: Draw circles on the original image
-            // Note: created a Fucntion to do this!!!!
-            for (size_t i = 0; i < circles.size(); i++){
-                Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
-                int radius = cvRound(circles[i][2]);
-                // circle(grayImage, center, radius, Scalar(0, 255, 0), 2); // white 
-                circle(img, center, radius, Scalar(0, 255, 0), 2); // nean green 
+            // Step 3a: Draw circles on the copy image 
+            clockDetector.drawDetectCirclesCopy(circles, grayImage);
+            clockDetector.drawDetectCircles(circles, img);
+
+            // Print out center coordinates detected for image input
+            for (const auto& circle : circles) {
+                float x = circle[0];
+                float y = circle[1];
+                float radius = circle[2];
+                std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
             }
             
             // other steps ...
-
             // Break the loop if both circles and lines are detected
             break;
         }

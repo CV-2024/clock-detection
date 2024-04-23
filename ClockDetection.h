@@ -33,6 +33,20 @@ class ClockDetection {
         @return Detected circles (center coordinates and radius)
         */
        vector<Vec3f> detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius);
+
+       /*
+        @brief Draw the Circle on the passed image directly
+        @param Image - input image to be drawn on 
+        @param circles - vector of Detected circles(center coordinates and radius)
+       */
+       void drawDetectCircles(vector<Vec3f> circles, const cv::Mat& Image);
+       /*
+        @brief Draw the Circle on the copy of the passed image and display it.
+        @param grayImage - Grayscale image
+        @param circles - vector of Detected circles(center coordinates and radius)
+       */
+       void drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat& grayImage);
+
 };
 
 #endif /* CLOCK_DETECTION_H */
