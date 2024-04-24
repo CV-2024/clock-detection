@@ -47,6 +47,17 @@ class ClockDetection {
        */
        void drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat& grayImage);
 
+       /*
+       @brief apply edge detection using CANNY to an greyScale image.
+       @param grayImage - Grayscale image
+       @param detectedEdges - Output of the detector
+       @param lowThreshold - integer value that is the low thereshold 
+       @param highThreshold - integer value that is the low thereshold 
+       @param kernelSize -  integer value that is the size of the Sobel kernel to be used internally
+       @param L2gradient - boolean  that indicates whether to use 𝐿2 norm for gradient calculation. If set to true, the function will use the 𝐿2 norm (square root of the sum of squares of gradient magnitudes) to compute the gradient magnitude. If set to false, it will use the 𝐿1 norm (sum of absolute values of gradient magnitudes). Typically, setting this parameter to true produces better results but is slower.
+       */
+       void edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient);
+
 };
 
 #endif /* CLOCK_DETECTION_H */

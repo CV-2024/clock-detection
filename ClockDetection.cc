@@ -39,3 +39,10 @@ void ClockDetection::drawDetectCircles(vector<Vec3f> circles, const cv::Mat& Ima
         cv::circle(Image, center, radius, cv::Scalar(0, 0, 255), 2); //draw red circle on gray image
     }
 }
+
+
+void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient){
+    Canny(grayImage, detectedEdges, lowThreshold, highThreshold, kernelSize, L2gradient);
+
+}
+

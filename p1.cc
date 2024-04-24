@@ -25,6 +25,8 @@ int main(){
     // Step 2: Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
     
+    /*Agruments for Hough Circle Function*/
+
     // int maxRadius = grayImage.cols;
     int maxRadius = 200;
     // int minDist = grayImage.cols;
@@ -33,11 +35,18 @@ int main(){
     int param1 = 100; 
     int param2 = 30;
     int dp = 1; // the steps for resolution
+
+    /*Agruments for Canyy edge detection Function*/
+    int lowThreshold = 50;
+    int highThreshold = 200; 
+    int kernelSize = 3; 
+    bool L2gradient = true;
+
     while (true){
         // Step 3: Detect circles with Hough Circle 
         vector<Vec3f> circles = clockDetector.detectCircles(grayImage, dp, param1, param2, minDist, radius, maxRadius);
         if (circles.size() > 0){
-               cout << "Circles detected!" << endl;
+            cout << "Circles detected!" << endl;
             // Step 3a: Draw circles on the copy image 
             clockDetector.drawDetectCirclesCopy(circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
@@ -52,30 +61,16 @@ int main(){
 
             // step 4: Use CANNY for line
             Mat edges;
-            Canny(grayImage, edges, 50, 200, 3, true);
-            imshow("canvasOutput", edges);
+            clockDetector.edgeDetection(grayImage, edges, lowThreshold, highThreshold, kernelSize, L2gradient);
+            imshow("cannyOutput", edges);
 
-            // Step 5: Use Hough Line Transform to detect lines
-
-            // Standard Hough Line Transform
-            vector<Vec2f> lines; // will hold the results of the detection
-            HoughLines(edges, lines, 1, CV_PI/180, 50, 0, 0); // runs the actual detection
+            // Step 5: Use Standard Hough Line Transform to detect lines 
+            vector<Vec2f> lines; 
+            HoughLines(edges, lines, 1, CV_PI/180, 50, 0, 0); 
             
-            // // Probabilistic Line Transform
-            // vector<Vec4i> linesP; 
-            // HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
-
-
  
-            // // Step 6: Draw detected lines on the original image
-            // if (linesP.size() >= 2){
-            //     cout << "linesP.size(): " << linesP.size() << endl;
-            //     cout << "MIN 2 lines detected!" << endl;
-            //     for (size_t i = 0; i < linesP.size(); i++) {
-            //         Vec4i l = linesP[i];
-            //         line( img, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
-            //     }
-            // }
+            // // Step 6: Draw detected lines from Use Standard Hough Line on the original image
+            
             if (lines.size() >= 2){
                 cout << "lines.size(): " << lines.size() << endl;
                 cout << "MIN 2 lines detected!" << endl;
@@ -93,8 +88,21 @@ int main(){
                 }
                 break;
             }
+            // // Step 5: Use Probabilistic Hough Line Transform to detect lines 
+            // vector<Vec4i> linesP; 
+            
+            // // Step 6: Draw detected lines from Use Probabilistic Hough Line on the original image
+            // HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
+            // if (linesP.size() >= 2){
+            //     cout << "linesP.size(): " << linesP.size() << endl;
+            //     cout << "MIN 2 lines detected!" << endl;
+            //     for (size_t i = 0; i < linesP.size(); i++) {
+            //         Vec4i l = linesP[i];
+            //         line( img, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
+            //     }
+            // }
             else{
-                // Step 6b: Increase radius and go back to step 2 (min of 2 lines not dectected)
+                // Step 5b: Increase radius and go back to step 2 (min of 2 lines not dectected)
                 cout << "MIN 2 lines NOT detected!" << endl;
                 radius++;
                 // continue;
