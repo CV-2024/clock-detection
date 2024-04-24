@@ -24,6 +24,11 @@ int main(){
 
     // Step 2: Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
+
+    // result cirle and lines:
+    vector<Vec3f> circlesResult;
+    vector<Vec4i> linesPResult; 
+
     
     /*Agruments for Hough Circle Function*/
 
@@ -80,6 +85,14 @@ int main(){
                 cout << "MIN 2 lines detected!" << endl;
                     clockDetector.drawDetectedProbabilisticLineCopy(linesP, grayImage);
                     clockDetector.drawDetectedProbabilisticLine(linesP, img);
+
+                // Step: 6: Check if lines are close to the center
+                    // ...
+                // Step 7: pick the two lines that are close togehter
+                    // ...
+                // Step 8: Saved that circle and line into resuls 
+                    circlesResult = circles;
+                    linesPResult = linesP; 
                 // Break the loop if both circles and lines are detected
                 break;
             }
@@ -89,16 +102,16 @@ int main(){
                 radius++;
                 // continue;
             }
-
-            // other steps ...
-
         }
         else{
             // Step 3b: Increase radius and go back to step 2 (no cicle dectected)            
             radius++;
         }
     }
-    // Display the original image with detected circles
+    // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
+    // ...
+
+    // Step 10: Display the original image with detected circles
     cout << "Breaks" << endl;
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
