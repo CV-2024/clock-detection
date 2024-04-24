@@ -51,14 +51,7 @@ int main(){
             clockDetector.drawDetectCirclesCopy(circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
 
-            // Print out center coordinates detected for image input
-            // for (const auto& circle : circles) {
-            //     float x = circle[0];
-            //     float y = circle[1];
-            //     float radius = circle[2];
-            //     std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
-            // }
-
+        
             // step 4: Use CANNY for line
             Mat edges;
             clockDetector.edgeDetection(grayImage, edges, lowThreshold, highThreshold, kernelSize, L2gradient);
@@ -68,29 +61,19 @@ int main(){
             vector<Vec2f> lines; 
             HoughLines(edges, lines, 1, CV_PI/180, 50, 0, 0); 
             
- 
-            // // Step 6: Draw detected lines from Use Standard Hough Line on the original image
-            
+            // Step 6: Check for a min of 2 lines
             if (lines.size() >= 2){
+                // Draw detected lines from Use Standard Hough Line on the original image
                 cout << "lines.size(): " << lines.size() << endl;
                 cout << "MIN 2 lines detected!" << endl;
-                for( size_t i = 0; i < lines.size(); i++ ){
-                    float rho = lines[i][0], theta = lines[i][1];
-                    Point pt1, pt2;
-                    double a = cos(theta), b = sin(theta);
-                    double x0 = a*rho, y0 = b*rho;
-                    pt1.x = cvRound(x0 + 1000*(-b));
-                    pt1.y = cvRound(y0 + 1000*(a));
-                    pt2.x = cvRound(x0 - 1000*(-b));
-                    pt2.y = cvRound(y0 - 1000*(a));
-                    line(img, pt1, pt2, Scalar(0,0,255), 3, LINE_AA);
-                    // Break the loop if both circles and lines are detected
-                }
+                clockDetector.drawDetectLineCopy(lines, grayImage);
+                clockDetector.drawDetectLine(lines, img);
+                // Break the loop if both circles and lines are detected
                 break;
             }
             // // Step 5: Use Probabilistic Hough Line Transform to detect lines 
             // vector<Vec4i> linesP; 
-            
+
             // // Step 6: Draw detected lines from Use Probabilistic Hough Line on the original image
             // HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
             // if (linesP.size() >= 2){

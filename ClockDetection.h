@@ -39,13 +39,13 @@ class ClockDetection {
         @param Image - input image to be drawn on 
         @param circles - vector of Detected circles(center coordinates and radius)
        */
-       void drawDetectCircles(vector<Vec3f> circles, const cv::Mat& Image);
+       void drawDetectCircles(const vector<Vec3f> &circles, const cv::Mat& Image);
        /*
         @brief Draw the Circle on the copy of the passed image and display it.
         @param grayImage - Grayscale image
         @param circles - vector of Detected circles(center coordinates and radius)
        */
-       void drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat& grayImage);
+       void drawDetectCirclesCopy(const vector<Vec3f> &circles, const cv::Mat& grayImage);
 
        /*
        @brief apply edge detection using CANNY to an greyScale image.
@@ -58,6 +58,19 @@ class ClockDetection {
        */
        void edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient);
 
+
+    /*
+        @brief Draw the line on the passed image directly
+        @param Image - input image to be drawn on 
+        @param lines - vector of Detected line(with endpoints)
+       */
+       void drawDetectLine(vector<Vec2f> &lines, const cv::Mat& Image);
+       /*
+        @brief Draw the Line on the copy of the passed image and display it.
+        @param grayImage - Grayscale image
+        @param lines - vector of Detected line(with endpoints)
+       */
+       void drawDetectLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
 };
 
 #endif /* CLOCK_DETECTION_H */
