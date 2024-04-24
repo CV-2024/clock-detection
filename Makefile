@@ -19,9 +19,9 @@ EXEC_DIR=.
 	g++ $(C++FLAG) $(INCLUDES)  -c $< -o $@
 
 # Include directories
-#INCLUDES = -I. -I/usr/local/include/opencv4
+INCLUDES= -I. -I/usr/local/include/opencv4
 #INCLUDES = -I. -I/mnt/c/Users/drewr/Desktop/clock-detection/usr/share/opencv4/include
-INCLUDES = -I. -I/usr/include/opencv4
+# INCLUDES = -I. -I/usr/include/opencv4
 
 # Libraries
 LIBS_ALL = -L/usr/lib -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
