@@ -5,7 +5,7 @@
 ##
 ##############################################
 
-# FLAGS
+#FLAGS
 C++FLAG = -g -std=c++11
 
 # Libraries
@@ -20,13 +20,17 @@ EXEC_DIR=.
 
 # Include directories
 INCLUDES= -I. -I/usr/local/include/opencv4
+#INCLUDES = -I. -I/mnt/c/Users/drewr/Desktop/clock-detection/usr/share/opencv4/include
+# INCLUDES = -I. -I/usr/include/opencv4
 
 # Libraries
 LIBS_ALL = -L/usr/lib -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
 
+
 # Program specifics
 Cpp_OBJ_P1=ClockDetection.o main.o
 PROGRAM_1=main
+
 
 # Build program
 $(PROGRAM_1): $(Cpp_OBJ_P1)
@@ -39,3 +43,45 @@ all:
 # Clean
 clean:
 	(rm -f *.o;rm main)
+
+
+# ##MAKEFILE DREW USES ON WINDOWS#####
+# # Compiler and flags
+# CXX = g++
+# CXXFLAGS = -g -std=c++11
+
+# # Directories
+# SRC_DIR = .
+# BUILD_DIR = build
+# EXEC_DIR = .
+
+# # Include directories
+# INCLUDES = -I$(SRC_DIR) -I/home/drewr/Desktop/opencv/include/opencv4
+
+# # Libraries
+# LIBS_ALL = -LG:/opencv/x64/vc16/lib \
+#            -lopencv_core -lopencv_imgproc -lopencv_highgui \
+#            -lopencv_imgcodecs
+
+# # Program specifics
+# CPP_SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
+# OBJECTS = $(CPP_SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+# PROGRAM = main
+
+# # Build directory
+# $(shell mkdir -p $(BUILD_DIR))
+
+# # Object file rule
+# $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+# 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+# # Build program
+# $(EXEC_DIR)/$(PROGRAM): $(OBJECTS)
+# 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS_ALL)
+
+# # Default target
+# all: $(EXEC_DIR)/$(PROGRAM)
+
+# # Clean
+# clean:
+# 	$(RM) $(BUILD_DIR)/*.o $(EXEC_DIR)/$(PROGRAM)

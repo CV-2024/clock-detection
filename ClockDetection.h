@@ -24,7 +24,8 @@ class ClockDetection {
         @param const cv::Mat& - grayscale image
         @return vector<cv::Vec3f> - detected circles (center coordinates and radius)
         */
-        vector<Vec3f> detectCircles(const cv::Mat& grayImage);
+        vector<Vec3f> detectCircles(const cv::Mat& grayScale);
+
 };
 
 #endif /* CLOCK_DETECTION_H */
