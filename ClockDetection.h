@@ -59,18 +59,37 @@ class ClockDetection {
        void edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient);
 
 
-    /*
-        @brief Draw the line on the passed image directly
+        /*
+        @brief Draw the Standard line on the passed image directly
         @param Image - input image to be drawn on 
         @param lines - vector of Detected line(with endpoints)
-       */
-       void drawDetectLine(vector<Vec2f> &lines, const cv::Mat& Image);
+        */
+       void drawDetectedStandardLine(vector<Vec2f> &lines, const cv::Mat& Image);
+       
        /*
-        @brief Draw the Line on the copy of the passed image and display it.
+        @brief Draw the Standard Line on the copy of the passed image and display it.
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
+       void drawDetectedStandardLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
+
+
+        /*
+        @brief Draw the Probabilistic line on the passed image directly
+        @param Image - input image to be drawn on 
+        @param lines - vector of Detected line(with endpoints)
+        */
+       void drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const cv::Mat& Image);
+       
+       /*
+        @brief Draw the Probabilistic Line on the copy of the passed image and display it.
+        @param grayImage - Grayscale image
+        @param lines - vector of Detected line(with endpoints)
+       */
+       void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
+
+
+       
 };
 
 #endif /* CLOCK_DETECTION_H */

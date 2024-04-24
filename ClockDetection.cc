@@ -54,7 +54,7 @@ void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEd
 }
 
 
-void ClockDetection::drawDetectLineCopy(vector<Vec2f>& lines, const cv::Mat& grayImage){
+void ClockDetection::drawDetectedStandardLineCopy(vector<Vec2f>& lines, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
     cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
@@ -76,7 +76,7 @@ void ClockDetection::drawDetectLineCopy(vector<Vec2f>& lines, const cv::Mat& gra
 
 }
 
-void ClockDetection::drawDetectLine(vector<Vec2f> &lines, const cv::Mat& Image){
+void ClockDetection::drawDetectedStandardLine(vector<Vec2f> &lines, const cv::Mat& Image){
     for( size_t i = 0; i < lines.size(); i++ ){
         float rho = lines[i][0], theta = lines[i][1];
         Point pt1, pt2;
@@ -90,3 +90,25 @@ void ClockDetection::drawDetectLine(vector<Vec2f> &lines, const cv::Mat& Image){
     }
 }
 
+void ClockDetection::drawDetectedProbabilisticLineCopy(vector<Vec4i>& linesP, const cv::Mat& grayImage){
+    cv::Mat colorImage;
+
+    cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
+    for (size_t i = 0; i < linesP.size(); i++) {
+        Vec4i l = linesP[i];
+        line(colorImage, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
+    }
+
+    // testing image output:
+    imshow("Draw Copy", colorImage);
+    int n = waitKey(0); // Wait for a keystroke in the window
+
+}
+
+
+void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const cv::Mat& Image){
+    for (size_t i = 0; i < linesP.size(); i++) {
+        Vec4i l = linesP[i];
+        line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
+    }
+}
