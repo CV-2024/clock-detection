@@ -108,11 +108,11 @@ int main(){
             radius++;
         }
     }
-    // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
-    // ...
 
-    // Step 10: Display the original image with detected circles
     cout << "Breaks" << endl;
+    // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
+    clockDetector.calculateTime(circlesResult, linesPResult);
+    // Step 10: Display the original image with detected circles
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
     return 0;

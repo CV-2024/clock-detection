@@ -112,3 +112,35 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
         line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
     }
 }
+
+
+void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
+    if (circles.empty() || linesP.empty()) {
+        cout << "Error: No circle or line detected!" << endl;
+        return;
+    }
+
+    // Extract circle and line information
+    Vec3f circle = circles[0]; 
+    Vec4i line = linesP[0];   
+
+    // Extract circle parameters (center and radius)
+    Point center(circles[0][0], circles[0][1]);
+    float radius = circles[0][2];
+
+    // Extract line parameters (endpoints)
+    Point p1(linesP[0][0], linesP[0][1]);
+    Point p2(linesP[0][2], linesP[0][3]);
+
+
+    // Calculate the length of sides of the triangle
+    double side1 = sqrt(pow(p1.x - center.x, 2) + pow(p1.y - center.y, 2)); // Length between p1 and center
+    double side2 = sqrt(pow(p2.x - center.x, 2) + pow(p2.y - center.y, 2)); // Length between p2 and center
+
+
+    
+
+    
+    // Print out the time
+    cout << "Time: " << "Still needs computing" << endl;
+}

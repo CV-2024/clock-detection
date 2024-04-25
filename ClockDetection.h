@@ -88,7 +88,12 @@ class ClockDetection {
        */
        void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
-
+        /*
+        @brief 
+        @param circles - vector of Detected circles(center coordinates and radius)
+        @param lines - vector of Detected line
+       */
+       void calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
        
 };
 
