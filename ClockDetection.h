@@ -87,9 +87,6 @@ class ClockDetection {
         @param lines - vector of Detected line(with endpoints)
        */
        void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
-
-
-       
 };
 
 #endif /* CLOCK_DETECTION_H */

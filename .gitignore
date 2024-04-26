@@ -1,5 +1,8 @@
 *.o
 .DS_Store
 .vscode/
+<<<<<<< HEAD
 main
 p1
+=======
+>>>>>>> 03903faf5bb844c80096e06c21dcf36fd2b15856

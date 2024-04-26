@@ -24,7 +24,6 @@ vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage, int dp, in
     return circles;
 }
 
-
 void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const cv::Mat& grayImage){
     //DRAWS RED CIRCLE ON DETECTED CIRCLE:
     cv::Mat colorImage;
@@ -112,3 +111,4 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
         line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
     }
 }
+
