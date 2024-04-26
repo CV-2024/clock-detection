@@ -9,23 +9,25 @@ cv::Mat ClockDetection::convertToGray(const cv::Mat &inputImage)
     return grayImage;
 }
 
-vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius){
+vector<Vec3f> ClockDetection::detectCircles(const cv::Mat &grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius)
+{
     vector<Vec3f> circles;
     // Detect circles using Hough Circle Transformation
     HoughCircles(grayImage, circles, HOUGH_GRADIENT, dp, minDist, param1, param2, minRadius, maxRadius);
     return circles;
 }
 
-
-void ClockDetection::drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat& grayImage){
-    //DRAWS RED CIRCLE ON DETECTED CIRCLE:
+void ClockDetection::drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat &grayImage)
+{
+    // DRAWS RED CIRCLE ON DETECTED CIRCLE:
     cv::Mat colorImage;
 
     cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
-    for (const auto& circle : circles) {
+    for (const auto &circle : circles)
+    {
         cv::Point center(cvRound(circle[0]), cvRound(circle[1]));
         int radius = cvRound(circle[2]);
-        cv::circle(colorImage, center, radius, cv::Scalar(0, 0, 255), 2); //draw red circle on gray image
+        cv::circle(colorImage, center, radius, cv::Scalar(0, 0, 255), 2); // draw red circle on gray image
     }
 
     // //testing image output:
@@ -33,34 +35,37 @@ void ClockDetection::drawDetectCirclesCopy(vector<Vec3f> circles, const cv::Mat&
     int n = waitKey(0); // Wait for a keystroke in the window
 }
 
-void ClockDetection::drawDetectCircles(vector<Vec3f> circles, const cv::Mat& Image){
-    for (const auto& circle : circles) {
+void ClockDetection::drawDetectCircles(vector<Vec3f> circles, const cv::Mat &Image)
+{
+    for (const auto &circle : circles)
+    {
         cv::Point center(cvRound(circle[0]), cvRound(circle[1]));
         int radius = cvRound(circle[2]);
-        cv::circle(Image, center, radius, cv::Scalar(0, 0, 255), 2); //draw red circle on gray image
+        cv::circle(Image, center, radius, cv::Scalar(0, 0, 255), 2); // draw red circle on gray image
     }
 }
-
 
 void ClockDetection::detectEllipse(const cv::Mat &grayImage)
 {
     // Detect edges using Canny edge detector
     Mat edges;
-    //params: image, edges array, threshold1, threshold2
+    // params: image, edges array, threshold1, threshold2
     Canny(grayImage, edges, 50, 150);
 
     // Find contours
     vector<vector<Point>> contours;
-    //params: image, output contours, mode, method
-    findContours(edges, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);//returns a modified image
+    // params: image, output contours, mode, method
+    findContours(edges, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE); // returns a modified image
 
     // Filter contours based on area or other criteria
     vector<Point> largestContour;
     double maxArea = 0;
-    for (const auto& contour : contours) {
-        double area = contourArea(contour);//Computes Area of the contours
-        //Finds max area
-        if (area > maxArea) {
+    for (const auto &contour : contours)
+    {
+        double area = contourArea(contour); // Computes Area of the contours
+        // Finds max area
+        if (area > maxArea)
+        {
             maxArea = area;
             largestContour = contour;
         }
@@ -69,11 +74,11 @@ void ClockDetection::detectEllipse(const cv::Mat &grayImage)
     // Approximate contour to reduce the number of points
     vector<Point> approx;
     double epsilon = 0.01 * arcLength(largestContour, true);
-    //params: array of curves, output array, epsilon, bool closed or not
+    // params: array of curves, output array, epsilon, bool closed or not
     approxPolyDP(largestContour, approx, epsilon, true);
 
     // Fits an ellipse around a set of 2D points.
-    //params: input array of points
+    // params: input array of points
     RotatedRect ellipse = fitEllipse(approx);
 
     // Convert grayscale image to BGR
@@ -95,5 +100,3 @@ void ClockDetection::detectEllipse(const cv::Mat &grayImage)
     imshow("Detected Ellipse", resultBGR);
     waitKey(0);
 }
-
-
