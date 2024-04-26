@@ -45,7 +45,7 @@ void ClockDetection::drawDetectCircles(vector<Vec3f> circles, const cv::Mat &Ima
     }
 }
 
-void ClockDetection::detectEllipse(const cv::Mat &grayImage)
+std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &grayImage)
 {
     // Detect edges using Canny edge detector
     Mat edges;
@@ -99,4 +99,5 @@ void ClockDetection::detectEllipse(const cv::Mat &grayImage)
     // Show the result
     imshow("Detected Ellipse", resultBGR);
     waitKey(0);
+    return std::make_tuple(center, radiusX, radiusY);
 }

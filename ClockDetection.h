@@ -51,7 +51,7 @@ public:
     @param const cv::Mat& - grayscale image
     @return vector<cv::Vec3f> - detected ellipse (center coordinates and radius)
     */
-    void detectEllipse(const cv::Mat &grayImage);
+    std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
 
 };
 
