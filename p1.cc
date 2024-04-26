@@ -31,12 +31,6 @@ int main(){
 
 
     /*Agruments for Hough Circle Function*/
-
-    int maxRadius = grayImage.cols;
-    // int maxRadius = 200;
-    int minDist = grayImage.cols;
-    // int minDist = grayImage.rows / 8;
-
     // int maxRadius = grayImage.cols;
     int maxRadius = 200;
     // int minDist = grayImage.cols;
@@ -45,6 +39,8 @@ int main(){
     int param1 = 100; 
     int param2 = 30;
     int dp = 1; // the steps for resolution
+
+
     /*Agruments for Canyy edge detection Function*/
     int lowThreshold = 50;
     int highThreshold = 200; 
