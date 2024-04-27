@@ -152,13 +152,30 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     double side3 = norm(hourStart - hourEnd);
 
     // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
-    
+    double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
 
-   
+    // Compute the angle from the cosine value (in radians)
+    double angleInRadians = acos(cosine);
+
+    // Convert the angle from radians to degrees
+    double angleInDegrees = angleInRadians * 180.0 / CV_PI;
 
 
-    // ... 
-    // ... 
+    // Determine the number of steps for the hour hand and the minute hand
+    double hourSteps = angleInDegrees / 30.0; // 30 degrees per hour
+    double minuteSteps = angleInDegrees / 6.0; // 6 degrees per minute
+
+    if (hourStart.x > center.x) {
+        hourSteps = hourSteps / 30.0; // Right side of the clock face
+    } else {
+        hourSteps = (360.0 - hourSteps) / 30.0; // Left side of the clock face
+    }
+
+    // Print out the steps for the hour hand and the minute hand
+    cout << "Hour Hand Steps: " << hourSteps << endl;
+
+    // need too do the same thing for the miunte hand 
+    // ...
     
     // Print out the time
     cout << "Time: " << "Still needs computing" << endl;
