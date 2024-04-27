@@ -24,7 +24,6 @@ vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage, int dp, in
     return circles;
 }
 
-
 void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const cv::Mat& grayImage){
     //DRAWS RED CIRCLE ON DETECTED CIRCLE:
     cv::Mat colorImage;
@@ -144,3 +143,4 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     // Print out the time
     cout << "Time: " << "Still needs computing" << endl;
 }
+

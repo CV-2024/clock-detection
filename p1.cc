@@ -29,17 +29,17 @@ int main(){
     vector<Vec3f> circlesResult;
     vector<Vec4i> linesPResult; 
 
-    
-    /*Agruments for Hough Circle Function*/
 
-    int maxRadius = grayImage.cols;
-    // int maxRadius = 200;
-    int minDist = grayImage.cols;
-    // int minDist = grayImage.rows / 8;
+    /*Agruments for Hough Circle Function*/
+    // int maxRadius = grayImage.cols;
+    int maxRadius = 200;
+    // int minDist = grayImage.cols;
+    int minDist = grayImage.rows / 8;
     int radius = 10;
     int param1 = 100; 
     int param2 = 30;
     int dp = 1; // the steps for resolution
+
 
     /*Agruments for Canyy edge detection Function*/
     int lowThreshold = 50;
@@ -55,7 +55,6 @@ int main(){
             // Step 3a: Draw circles on the copy image 
             clockDetector.drawDetectCirclesCopy(circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
-
         
             // step 4: Use CANNY for line
             Mat edges;
@@ -102,6 +101,18 @@ int main(){
                 radius++;
                 // continue;
             }
+
+            // Print out center coordinates detected for image input
+            for (const auto& circle : circles) {
+                float x = circle[0];
+                float y = circle[1];
+                float radius = circle[2];
+                std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
+            }
+            
+            // other steps ...
+            // Break the loop if both circles and lines are detected
+            break;
         }
         else{
             // Step 3b: Increase radius and go back to step 2 (no cicle dectected)            
