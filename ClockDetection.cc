@@ -121,24 +121,44 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     // Extract circle and line information
     Vec3f circle = circles[0]; 
-    Vec4i line = linesP[0];   
+    Point center(circle[0], circle[1]);
+    Vec4i line1 = linesP[0];
+    Vec4i line2 = linesP[1];
 
-    // Extract circle parameters (center and radius)
-    Point center(circles[0][0], circles[0][1]);
-    float radius = circles[0][2];
+    // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
+    Vec4i hourHand, minuteHand;
+    // norm: : Calculates the Euclidean distance between the start and end points
+    if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
+        norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
+        hourHand = line1;
+        minuteHand = line2;
+    } else {
+        hourHand = line2;
+        minuteHand = line1;
+    }
 
-    // Extract line parameters (endpoints)
-    Point p1(linesP[0][0], linesP[0][1]);
-    Point p2(linesP[0][2], linesP[0][3]);
+    Point hourStart(hourHand[0], hourHand[1]);
+    Point hourEnd(hourHand[2], hourHand[3]);
 
+    Point minuteStart(minuteHand[0], minuteHand[1]);
+    Point minuteEnd(minuteHand[2], minuteHand[3]);
 
-    // Calculate the length of sides of the triangle
-    double side1 = sqrt(pow(p1.x - center.x, 2) + pow(p1.y - center.y, 2)); // Length between p1 and center
-    double side2 = sqrt(pow(p2.x - center.x, 2) + pow(p2.y - center.y, 2)); // Length between p2 and center
+    // Determine the point on the x-axis at the top of the image
+    Point topPoint(center.x, 0);
 
+    // Calculate the lengths of the sides of the triangle
+    double side1 = norm(center - topPoint);
+    double side2 = norm(center - hourStart);
+    double side3 = norm(hourStart - hourEnd);
 
+    // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
     
 
+   
+
+
+    // ... 
+    // ... 
     
     // Print out the time
     cout << "Time: " << "Still needs computing" << endl;
