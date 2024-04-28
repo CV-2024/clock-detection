@@ -174,8 +174,45 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     // Print out the steps for the hour hand and the minute hand
     cout << "Hour Hand Steps: " << hourSteps << endl;
 
-    // need too do the same thing for the miunte hand 
-    // ...
+    
+    // Calculate the lengths of the sides of the triangle for the minute hand
+    double side1_minute = norm(center - topPoint);
+    double side2_minute = norm(center - minuteStart);
+    double side3_minute = norm(minuteStart - minuteEnd);
+
+    // Apply the law of cosines to calculate the cosine of the angle between the minute hand and the center line
+    double cosine_minute = (pow(side2_minute, 2) + pow(side1_minute, 2) - pow(side3_minute, 2)) / (2 * side2_minute * side1_minute);
+
+    // Compute the angle from the cosine value (in radians) for the minute hand
+    double angleInRadians_minute = acos(cosine_minute);
+
+    // Convert the angle from radians to degrees for the minute hand
+    double angleInDegrees_minute = angleInRadians_minute * 180.0 / CV_PI;
+
+    // Determine the number of steps for the minute hand
+    double minuteSteps;
+    if (minuteStart.x > center.x) {
+        minuteSteps = angleInDegrees_minute / 6.0; // Right side of the clock face
+    } else {
+        minuteSteps = (360.0 - angleInDegrees_minute) / 6.0; // Left side of the clock face
+    }
+
+    // Print out the steps for the hour hand and the minute hand
+    cout << "Minute Hand Steps: " << minuteSteps << endl;
+
+
+    // Compute the time based on the calculated steps for the hour and minute hands
+    int hour = static_cast<int>(hourSteps);
+    int minute = static_cast<int>(minuteSteps);
+
+    // Ensure hour and minute values are within valid ranges
+    hour = (hour >= 0 && hour <= 11) ? hour : 0;
+    minute = (minute >= 0 && minute <= 59) ? minute : 0;
+
+    // Print out the computed time
+    cout << "Time: " << hour << ":" << minute << endl;
+
+
     
     // Print out the time
     cout << "Time: " << "Still needs computing" << endl;
