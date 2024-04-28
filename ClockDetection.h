@@ -89,7 +89,7 @@ class ClockDetection {
        void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
         /*
-        @brief 
+        @brief the trigeometry used to compute the time 
         @param circles - vector of Detected circles(center coordinates and radius)
         @param lines - vector of Detected line
        */
