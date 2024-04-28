@@ -137,6 +137,7 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
         minuteHand = line1;
     }
 
+    // get all the points for the hour and miunte hands
     Point hourStart(hourHand[0], hourHand[1]);
     Point hourEnd(hourHand[2], hourHand[3]);
 
@@ -163,7 +164,6 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     // Determine the number of steps for the hour hand and the minute hand
     double hourSteps = angleInDegrees / 30.0; // 30 degrees per hour
-    double minuteSteps = angleInDegrees / 6.0; // 6 degrees per minute
 
     if (hourStart.x > center.x) {
         hourSteps = hourSteps / 30.0; // Right side of the clock face
@@ -211,10 +211,5 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     // Print out the computed time
     cout << "Time: " << hour << ":" << minute << endl;
-
-
-    
-    // Print out the time
-    cout << "Time: " << "Still needs computing" << endl;
 }
 
