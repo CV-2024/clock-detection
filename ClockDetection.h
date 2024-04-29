@@ -7,20 +7,19 @@
 using namespace std;
 using namespace cv;
 
-class ClockDetection {
-    private:
-        string image_path;
-        // vector<Vec3f> circles;
-        // Mat edges;
-    public:
-        // Default constructor
-        ClockDetection(const string& imagePath);
-        /*
-        @breif convert colored image to greyscale
-        @param const cv::Mat& - color image 
-        */
-        cv::Mat convertToGray(const cv::Mat& inputImage);
+class ClockDetection
+{
+private:
+    string image_path;
 
+public:
+    // Default constructor
+    ClockDetection(const string &imagePath);
+    /*
+    @breif convert colored image to greyscale
+    @param const cv::Mat& - color image
+    */
+    cv::Mat convertToGray(const cv::Mat &inputImage);
 
         /*
         @brief Detect circles in a grayscale image using Hough Circle Transformation
@@ -87,6 +86,13 @@ class ClockDetection {
         @param lines - vector of Detected line(with endpoints)
        */
        void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
+    /*
+    @brief Detect ellipse in a grayscale image
+    @param const cv::Mat& - grayscale image
+    @return vector<cv::Vec3f> - detected ellipse (center coordinates and radius)
+    */
+    std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
+
 };
 
 #endif /* CLOCK_DETECTION_H */
