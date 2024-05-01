@@ -86,7 +86,7 @@ class ClockDetection {
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
+       void drawDetectedProbabilisticLineCopy(string name, vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
         /*
         @brief the trigeometry used to compute the time 
@@ -94,6 +94,14 @@ class ClockDetection {
         @param lines - vector of Detected line
        */
        void calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
+
+        /*
+        @brief 
+        @param
+        @param
+        @param
+        */
+       vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
        
 };
 

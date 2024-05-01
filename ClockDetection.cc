@@ -52,7 +52,6 @@ void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEd
     Canny(grayImage, detectedEdges, lowThreshold, highThreshold, kernelSize, L2gradient);
 }
 
-
 void ClockDetection::drawDetectedStandardLineCopy(vector<Vec2f>& lines, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
@@ -89,7 +88,7 @@ void ClockDetection::drawDetectedStandardLine(vector<Vec2f> &lines, const cv::Ma
     }
 }
 
-void ClockDetection::drawDetectedProbabilisticLineCopy(vector<Vec4i>& linesP, const cv::Mat& grayImage){
+void ClockDetection::drawDetectedProbabilisticLineCopy(string name, vector<Vec4i>& linesP, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
     cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
@@ -99,11 +98,10 @@ void ClockDetection::drawDetectedProbabilisticLineCopy(vector<Vec4i>& linesP, co
     }
 
     // testing image output:
-    imshow("Draw Copy", colorImage);
+    imshow(name, colorImage);
     int n = waitKey(0); // Wait for a keystroke in the window
 
 }
-
 
 void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const cv::Mat& Image){
     for (size_t i = 0; i < linesP.size(); i++) {
@@ -111,7 +109,6 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
         line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
     }
 }
-
 
 void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
     if (circles.empty() || linesP.empty()) {
@@ -204,4 +201,28 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     cout << "Time: " << hour << ":" << minute << endl;
 }
+
+vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
+    vector<Vec4i> filteredLines;
+
+    // Iterate through each line and check if either endpoint is close to the center
+    for (const auto& line : lines) {
+        // endpoints 
+        Point pt1(line[0], line[1]); 
+        Point pt2(line[2], line[3]);
+
+        // Calculate distance from each endpoint to the center
+        double dist1 = norm(pt1 - center);
+        double dist2 = norm(pt2 - center);
+
+        // If either endpoint is close to the center, keep the line
+        if (dist1 < distanceThreshold || dist2 < distanceThreshold) {
+            filteredLines.push_back(line);
+        }
+    }
+
+    return filteredLines;
+}
+
+
 
