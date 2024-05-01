@@ -110,97 +110,97 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
     }
 }
 
-void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
-    if (circles.empty() || linesP.empty()) {
-        cout << "Error: No circle or line detected!" << endl;
-        return;
-    }
+// void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
+//     if (circles.empty() || linesP.empty()) {
+//         cout << "Error: No circle or line detected!" << endl;
+//         return;
+//     }
 
-    // Extract circle and line information
-    Vec3f circle = circles[0]; 
-    Point center(circle[0], circle[1]);
-    Vec4i line1 = linesP[0];
-    Vec4i line2 = linesP[1];
+//     // Extract circle and line information
+//     Vec3f circle = circles[0]; 
+//     Point center(circle[0], circle[1]);
+//     Vec4i line1 = linesP[0];
+//     Vec4i line2 = linesP[1];
 
-    // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
-    Vec4i hourHand, minuteHand;
-    // norm: : Calculates the Euclidean distance between the start and end points
-    if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
-        norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
-        hourHand = line1;
-        minuteHand = line2;
-    } else {
-        hourHand = line2;
-        minuteHand = line1;
-    }
+//     // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
+//     Vec4i hourHand, minuteHand;
+//     // norm: : Calculates the Euclidean distance between the start and end points
+//     if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
+//         norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
+//         hourHand = line1;
+//         minuteHand = line2;
+//     } else {
+//         hourHand = line2;
+//         minuteHand = line1;
+//     }
 
-    // get all the points for the hour and miunte hands
-    Point hourStart(hourHand[0], hourHand[1]);
-    Point hourEnd(hourHand[2], hourHand[3]);
+//     // get all the points for the hour and miunte hands
+//     Point hourStart(hourHand[0], hourHand[1]);
+//     Point hourEnd(hourHand[2], hourHand[3]);
 
-    Point minuteStart(minuteHand[0], minuteHand[1]);
-    Point minuteEnd(minuteHand[2], minuteHand[3]);
+//     Point minuteStart(minuteHand[0], minuteHand[1]);
+//     Point minuteEnd(minuteHand[2], minuteHand[3]);
 
-    // the x-axis at the top of the image
-    Point topPoint(center.x, 0);
+//     // the x-axis at the top of the image
+//     Point topPoint(center.x, 0);
 
-    // Calculate the lengths of the sides of the triangle
-    double side1 = norm(center - topPoint);
-    double side2 = norm(center - hourStart);
-    double side3 = norm(hourStart - hourEnd);
+//     // Calculate the lengths of the sides of the triangle
+//     double side1 = norm(center - topPoint);
+//     double side2 = norm(center - hourStart);
+//     double side3 = norm(hourStart - hourEnd);
 
-    // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
-    double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
+//     // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
+//     double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
 
-    // Compute the angle from the cosine value (in radians)
-    double angleInRadians = acos(cosine);
+//     // Compute the angle from the cosine value (in radians)
+//     double angleInRadians = acos(cosine);
 
-    // Convert the angle from radians to degrees
-    double angleInDegrees = angleInRadians * 180.0 / CV_PI;
+//     // Convert the angle from radians to degrees
+//     double angleInDegrees = angleInRadians * 180.0 / CV_PI;
 
 
-    // Determine the number of steps for the hour hand and the minute hand
-    double hourSteps = angleInDegrees / 30.0; // 30 degrees per hour and later 6 for minutes 
+//     // Determine the number of steps for the hour hand and the minute hand
+//     double hourSteps = angleInDegrees / 30.0; // 30 degrees per hour and later 6 for minutes 
 
-    if (hourStart.x > center.x) {
-        hourSteps = hourSteps / 30.0; // Right side of the clock face
-    } else {
-        hourSteps = (360.0 - hourSteps) / 30.0; // Left side of the clock face
-    }
+//     if (hourStart.x > center.x) {
+//         hourSteps = hourSteps / 30.0; // Right side of the clock face
+//     } else {
+//         hourSteps = (360.0 - hourSteps) / 30.0; // Left side of the clock face
+//     }
 
-    // Print out the steps for the hour hand and the minute hand
-    cout << "Hour Hand Steps: " << hourSteps << endl;
+//     // Print out the steps for the hour hand and the minute hand
+//     cout << "Hour Hand Steps: " << hourSteps << endl;
 
-    // again for the minute hand
+//     // again for the minute hand
     
-    double side1_minute = norm(center - topPoint);
-    double side2_minute = norm(center - minuteStart);
-    double side3_minute = norm(minuteStart - minuteEnd);
+//     double side1_minute = norm(center - topPoint);
+//     double side2_minute = norm(center - minuteStart);
+//     double side3_minute = norm(minuteStart - minuteEnd);
 
-    double cosine_minute = (pow(side2_minute, 2) + pow(side1_minute, 2) - pow(side3_minute, 2)) / (2 * side2_minute * side1_minute);
-    double angleInRadians_minute = acos(cosine_minute);
-    double angleInDegrees_minute = angleInRadians_minute * 180.0 / CV_PI;
+//     double cosine_minute = (pow(side2_minute, 2) + pow(side1_minute, 2) - pow(side3_minute, 2)) / (2 * side2_minute * side1_minute);
+//     double angleInRadians_minute = acos(cosine_minute);
+//     double angleInDegrees_minute = angleInRadians_minute * 180.0 / CV_PI;
 
-    double minuteSteps;
-    if (minuteStart.x > center.x) {
-        minuteSteps = angleInDegrees_minute / 6.0;
-    } else {
-        minuteSteps = (360.0 - angleInDegrees_minute);
-    }
+//     double minuteSteps;
+//     if (minuteStart.x > center.x) {
+//         minuteSteps = angleInDegrees_minute / 6.0;
+//     } else {
+//         minuteSteps = (360.0 - angleInDegrees_minute);
+//     }
 
-    cout << "Minute Hand Steps: " << minuteSteps << endl;
+//     cout << "Minute Hand Steps: " << minuteSteps << endl;
 
 
-    // Compute the time based on the calculated steps for the hour and minute hands
-    int hour = static_cast<int>(hourSteps);
-    int minute = static_cast<int>(minuteSteps);
+//     // Compute the time based on the calculated steps for the hour and minute hands
+//     int hour = static_cast<int>(hourSteps);
+//     int minute = static_cast<int>(minuteSteps);
 
-    // Ensure within valid ranges
-    hour = (hour >= 0 && hour <= 11) ? hour : 0;
-    minute = (minute >= 0 && minute <= 59) ? minute : 0;
+//     // Ensure within valid ranges
+//     hour = (hour >= 0 && hour <= 11) ? hour : 0;
+//     minute = (minute >= 0 && minute <= 59) ? minute : 0;
 
-    cout << "Time: " << hour << ":" << minute << endl;
-}
+//     cout << "Time: " << hour << ":" << minute << endl;
+// }
 
 vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
     vector<Vec4i> filteredLines;
