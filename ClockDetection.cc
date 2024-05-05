@@ -40,7 +40,7 @@ void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const c
 
     // //testing image output:
     imshow("Draw Copy", colorImage);
-    int n = waitKey(0); // Wait for a keystroke in the window
+    waitKey(0); // Wait for a keystroke in the window
 }
 
 void ClockDetection::drawDetectCircles(const vector<Vec3f> &circles, const cv::Mat& Image){
@@ -169,4 +169,26 @@ std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &g
     imshow("Detected Ellipse", resultBGR);
     waitKey(0);
     return std::make_tuple(center, radiusX, radiusY);
+}
+
+vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
+    vector<Vec4i> filteredLines;
+
+    // Iterate through each line and check if either endpoint is close to the center
+    for (const auto& line : lines) {
+        // endpoints 
+        Point pt1(line[0], line[1]); 
+        Point pt2(line[2], line[3]);
+
+        // Calculate distance from each endpoint to the center
+        double dist1 = norm(pt1 - center);
+        double dist2 = norm(pt2 - center);
+
+        // If either endpoint is close to the center, keep the line
+        if (dist1 < distanceThreshold || dist2 < distanceThreshold) {
+            filteredLines.push_back(line);
+        }
+    }
+
+    return filteredLines;
 }

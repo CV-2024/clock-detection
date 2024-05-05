@@ -1,5 +1,6 @@
 // p1 - Hough Circle
 #include <iostream>
+#include<cmath>
 #include <opencv2/opencv.hpp>
 #include "ClockDetection.h"
 
@@ -8,7 +9,7 @@ using namespace cv;
 
 int main(){
     // Step 1: input image
-    string image_path = "data_analog_clocks/samples/1.jpg";
+    string image_path = "data_analog_clocks/samples/4.jpg";
     // string image_path = "data_analog_clocks/real_staright_images/fake_hands/1-00/10.jpg"; // with background 
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/0_3_07.pgm";
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/1_0_10.jpg";
@@ -55,11 +56,12 @@ int main(){
             // Step 3a: Draw circles on the copy image 
             clockDetector.drawDetectCirclesCopy(circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
-        
+            cout << "doing canny" << endl;
             // step 4: Use CANNY for line
             Mat edges;
             clockDetector.edgeDetection(grayImage, edges, lowThreshold, highThreshold, kernelSize, L2gradient);
             imshow("cannyOutput", edges);
+            waitKey(0); // Wait for a keystroke in the window
 
             // // Step 5: Use Standard Hough Line Transform to detect lines 
             // vector<Vec2f> lines; 
@@ -78,17 +80,51 @@ int main(){
             // Step 5: Use Probabilistic Hough Line Transform to detect lines 
             vector<Vec4i> linesP; 
             // Step 6: Draw detected lines from Use Probabilistic Hough Line on the original image
+            cout << "doing hough" << endl;
             HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
             if (linesP.size() >= 2){
                 cout << "linesP.size(): " << linesP.size() << endl;
                 cout << "MIN 2 lines detected!" << endl;
-                    clockDetector.drawDetectedProbabilisticLineCopy(linesP, grayImage);
-                    clockDetector.drawDetectedProbabilisticLine(linesP, img);
+                clockDetector.drawDetectedProbabilisticLineCopy(linesP, grayImage);
+                clockDetector.drawDetectedProbabilisticLine(linesP, img);
 
                 // Step: 6: Check if lines are close to the center
-                    // ...
-                // Step 7: pick the two lines that are close togehter
-                    // ...
+                Point center(circles[0][0], circles[0][1]);
+                vector<Vec4i> filteredLines = clockDetector.filterLinesCloseToCenter(linesP, center, 20);
+                // Step 7: pick the two hands
+                Vec4i hourHand;
+                Vec4i minHand;
+                double minLength = 1000;
+                double maxLength = 0;
+                // hour hand
+                for(auto& line: filteredLines){
+                    // endpoints 
+                    Point pt1(line[0], line[1]); 
+                    Point pt2(line[2], line[3]);
+                    // length (distance formula)
+                    double length = sqrt(pow((line[0] - line[2]), 2) + pow((line[1] - line[3]), 2));
+                    if(length < minLength){
+                        minLength = length;
+                        hourHand = line;
+                    }
+                }
+                // min hand
+                for(auto& line: filteredLines){
+                    // endpoints 
+                    Point pt1(line[0], line[1]); 
+                    Point pt2(line[2], line[3]);
+                    // length (distance formula)
+                    double length = sqrt(pow((line[0] - line[2]), 2) + pow((line[1] - line[3]), 2));
+                    if(length > maxLength){
+                        maxLength = length;
+                        minHand = line;
+                    }
+                }
+                // hour hand 
+                line(img, Point(hourHand[0], hourHand[1]), Point(hourHand[2], hourHand[3]), Scalar(0,255, 0), 3, LINE_AA);
+                line(img, Point(minHand[0], minHand[1]), Point(minHand[2], minHand[3]), Scalar(0,255, 0), 3, LINE_AA);
+                imshow("Detected Circles", img);
+                waitKey(0); // Wait for a keystroke in the window
                 // Step 8: Saved that circle and line into resuls 
                     circlesResult = circles;
                     linesPResult = linesP; 
@@ -125,6 +161,6 @@ int main(){
     // Step 10: Display the original image with detected circles
     cout << "Breaks" << endl;
     imshow("Detected Circles", img);
-    int k = waitKey(0); // Wait for a keystroke in the window
+    waitKey(0); // Wait for a keystroke in the window
     return 0;
 }
