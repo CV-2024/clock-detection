@@ -26,7 +26,7 @@ vector<Vec3f> ClockDetection::detectCircles(const cv::Mat &grayImage, int dp, in
     return circles;
 }
 
-void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const cv::Mat& grayImage){
+void ClockDetection::drawDetectCirclesCopy(string name, const vector<Vec3f>& circles, const cv::Mat& grayImage){
     //DRAWS RED CIRCLE ON DETECTED CIRCLE:
     cv::Mat colorImage;
 
@@ -39,7 +39,7 @@ void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const c
     }
 
     // //testing image output:
-    imshow("Draw Copy", colorImage);
+    imshow(name, colorImage);
     int n = waitKey(0); // Wait for a keystroke in the window
 }
 
@@ -55,8 +55,7 @@ void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEd
     Canny(grayImage, detectedEdges, lowThreshold, highThreshold, kernelSize, L2gradient);
 }
 
-
-void ClockDetection::drawDetectedStandardLineCopy(vector<Vec2f>& lines, const cv::Mat& grayImage){
+void ClockDetection::drawDetectedStandardLineCopy(string name, vector<Vec2f>& lines, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
     cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
@@ -73,7 +72,7 @@ void ClockDetection::drawDetectedStandardLineCopy(vector<Vec2f>& lines, const cv
     }
 
      // //testing image output:
-    imshow("Draw Copy", colorImage);
+    imshow(name, colorImage);
     int n = waitKey(0); // Wait for a keystroke in the window
 
 }
@@ -92,7 +91,7 @@ void ClockDetection::drawDetectedStandardLine(vector<Vec2f> &lines, const cv::Ma
     }
 }
 
-void ClockDetection::drawDetectedProbabilisticLineCopy(vector<Vec4i>& linesP, const cv::Mat& grayImage){
+void ClockDetection::drawDetectedProbabilisticLineCopy(string name, vector<Vec4i>& linesP, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
     cv::cvtColor(grayImage, colorImage, cv::COLOR_GRAY2BGR);
@@ -102,11 +101,10 @@ void ClockDetection::drawDetectedProbabilisticLineCopy(vector<Vec4i>& linesP, co
     }
 
     // testing image output:
-    imshow("Draw Copy", colorImage);
+    imshow(name, colorImage);
     int n = waitKey(0); // Wait for a keystroke in the window
 
 }
-
 
 void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const cv::Mat& Image){
     for (size_t i = 0; i < linesP.size(); i++) {
@@ -114,6 +112,30 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
         line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
     }
 }
+
+vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
+    vector<Vec4i> filteredLines;
+
+    // Iterate through each line and check if either endpoint is close to the center
+    for (const auto& line : lines) {
+        // endpoints 
+        Point pt1(line[0], line[1]); 
+        Point pt2(line[2], line[3]);
+
+        // Calculate distance from each endpoint to the center
+        double dist1 = norm(pt1 - center);
+        double dist2 = norm(pt2 - center);
+
+        // If either endpoint is close to the center, keep the line
+        if (dist1 < distanceThreshold || dist2 < distanceThreshold) {
+            filteredLines.push_back(line);
+        }
+    }
+
+    return filteredLines;
+}
+
+
 std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &grayImage)
 {
     // Detect edges using Canny edge detector

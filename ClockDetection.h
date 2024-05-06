@@ -44,7 +44,7 @@ public:
         @param grayImage - Grayscale image
         @param circles - vector of Detected circles(center coordinates and radius)
        */
-       void drawDetectCirclesCopy(const vector<Vec3f> &circles, const cv::Mat& grayImage);
+       void drawDetectCirclesCopy(string name, const vector<Vec3f> &circles, const cv::Mat& grayImage);
 
        /*
        @brief apply edge detection using CANNY to an greyScale image.
@@ -70,7 +70,7 @@ public:
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectedStandardLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
+       void drawDetectedStandardLineCopy(string name, vector<Vec2f> &lines, const cv::Mat& grayImage);
 
 
         /*
@@ -85,14 +85,16 @@ public:
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectedProbabilisticLineCopy(vector<Vec4i> &linesP, const cv::Mat& grayImage);
-    /*
-    @brief Detect ellipse in a grayscale image
-    @param const cv::Mat& - grayscale image
-    @return vector<cv::Vec3f> - detected ellipse (center coordinates and radius)
-    */
-    std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
+       void drawDetectedProbabilisticLineCopy(string name, vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
+        /*
+        @brief Filters out the lines that are not close to the center 
+        @param lines - vector of Detected line(with endpoints)
+        @param center - the center Point of the detected circle 
+        @param distanceThreshold - integer distance theshold from the center 
+        */
+       vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
+       
 };
 
 #endif /* CLOCK_DETECTION_H */

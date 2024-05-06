@@ -47,13 +47,16 @@ int main(){
     int kernelSize = 3; 
     bool L2gradient = true;
 
+    /*Parameters to filter if Close to teh center*/
+    int distanceThreshold = 20; 
+
     while (true){
         // Step 3: Detect circles with Hough Circle 
         vector<Vec3f> circles = clockDetector.detectCircles(grayImage, dp, param1, param2, minDist, radius, maxRadius);
         if (circles.size() > 0){
             cout << "Circles detected!" << endl;
             // Step 3a: Draw circles on the copy image 
-            clockDetector.drawDetectCirclesCopy(circles, grayImage);
+            clockDetector.drawDetectCirclesCopy("Detected Circle", circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
         
             // step 4: Use CANNY for line
@@ -69,7 +72,7 @@ int main(){
             //     // Draw detected lines from Use Standard Hough Line on the original image
             //     cout << "lines.size(): " << lines.size() << endl;
             //     cout << "MIN 2 lines detected!" << endl;
-            //     clockDetector.drawDetectedStandardLineCopy(lines, grayImage);
+            //     clockDetector.drawDetectedStandardLineCopy("Standard Line Detected", Circle",lines, grayImage);
             //     clockDetector.drawDetectedStandardLine(lines, img);
             //     // Break the loop if both circles and lines are detected
             //     break;
@@ -82,18 +85,27 @@ int main(){
             if (linesP.size() >= 2){
                 cout << "linesP.size(): " << linesP.size() << endl;
                 cout << "MIN 2 lines detected!" << endl;
-                    clockDetector.drawDetectedProbabilisticLineCopy(linesP, grayImage);
+                    clockDetector.drawDetectedProbabilisticLineCopy("minTwo?",linesP, grayImage);
                     clockDetector.drawDetectedProbabilisticLine(linesP, img);
 
                 // Step: 6: Check if lines are close to the center
-                    // ...
-                // Step 7: pick the two lines that are close togehter
-                    // ...
-                // Step 8: Saved that circle and line into resuls 
-                    circlesResult = circles;
-                    linesPResult = linesP; 
-                // Break the loop if both circles and lines are detected
-                break;
+                    Point center(circles[0][0], circles[0][1]); // should be only one circle correct, if more than one this doesn't work!
+                    vector<Vec4i> filteredLines = clockDetector.filterLinesCloseToCenter(linesP,center,20);
+                    clockDetector.drawDetectedProbabilisticLineCopy("filteredLines", filteredLines, grayImage);
+                    if(filteredLines.size()>=2){
+                        // Step 7: pick the two lines that are close togehter
+                        // ...
+                        // Step 8: Saved that circle and line into resuls 
+                        circlesResult = circles;
+                        linesPResult = filteredLines; 
+                        // Break the loop if both circles and lines are detected
+                        break;
+
+                    }
+                    else{
+                         cout << "MIN 2 lines that are close to the center not detected!" << endl;
+                         radius++;
+                    }
             }
             else{
                 // Step 5b: Increase radius and go back to step 2 (min of 2 lines not dectected)
@@ -119,11 +131,11 @@ int main(){
             radius++;
         }
     }
-    // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
-    // ...
 
-    // Step 10: Display the original image with detected circles
     cout << "Breaks" << endl;
+    // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
+    // clockDetector.calculateTime(circlesResult, linesPResult); 
+    // Step 10: Display the original image with detected circles
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
     return 0;
