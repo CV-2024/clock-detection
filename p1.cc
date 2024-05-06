@@ -8,7 +8,7 @@ using namespace cv;
 
 int main(){
     // Step 1: input image
-    string image_path = "data_analog_clocks/samples/1.jpg";
+    string image_path = "data_analog_clocks/samples/2.jpg";
     // string image_path = "data_analog_clocks/real_staright_images/fake_hands/1-00/10.jpg"; // with background 
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/0_3_07.pgm";
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/1_0_10.jpg";
@@ -31,10 +31,10 @@ int main(){
 
 
     /*Agruments for Hough Circle Function*/
-    // int maxRadius = grayImage.cols;
-    int maxRadius = 200;
-    // int minDist = grayImage.cols;
-    int minDist = grayImage.rows / 8;
+    int maxRadius = grayImage.cols;
+    // int maxRadius = 200;
+    int minDist = grayImage.cols;
+    // int minDist = grayImage.rows / 8;
     int radius = 10;
     int param1 = 100; 
     int param2 = 30;
@@ -94,13 +94,52 @@ int main(){
                     clockDetector.drawDetectedProbabilisticLineCopy("filteredLines", filteredLines, grayImage);
                     if(filteredLines.size()>=2){
                         // Step 7: pick the two lines that are close togehter
-                        // ...
+                        Vec4i hourHand;
+                        Vec4i minHand;
+                        vector<Vec4i> hands;
+                        double minLength = 1000;
+                        double maxLength = 0;
+                        // hour hand
+                        for(auto& line: filteredLines){
+                            // endpoints 
+                            Point pt1(line[0], line[1]); 
+                            Point pt2(line[2], line[3]);
+                            // length (distance formula)
+                            double length = sqrt(pow((line[0] - line[2]), 2) + pow((line[1] - line[3]), 2));
+                            if(length < minLength){
+                                minLength = length;
+                                hourHand = line;
+                            }
+                        }
+                        // min hand
+                        for(auto& line: filteredLines){
+                            // endpoints 
+                            Point pt1(line[0], line[1]); 
+                            Point pt2(line[2], line[3]);
+                            // length (distance formula)
+                            double length = sqrt(pow((line[0] - line[2]), 2) + pow((line[1] - line[3]), 2));
+                            if(length > maxLength){
+                                maxLength = length;
+                                minHand = line;
+                            }
+                        }
+                       
+                        // hour hand 
+                        line(img, Point(hourHand[0], hourHand[1]), Point(hourHand[2], hourHand[3]), Scalar(0,255, 0), 3, LINE_AA);
+                        line(img, Point(minHand[0], minHand[1]), Point(minHand[2], minHand[3]), Scalar(0,255, 0), 3, LINE_AA);
+
+                                        
+                        imshow("Detected Circles", img);
+                        waitKey(0); // Wait for a keystroke in the window
+                        hands.push_back(hourHand);
+                        hands.push_back(minHand);
+
                         // Step 8: Saved that circle and line into resuls 
-                        circlesResult = circles;
-                        linesPResult = filteredLines; 
+                            circlesResult = circles;
+                            // linesPResult = linesP; 
+                            linesPResult = hands;
                         // Break the loop if both circles and lines are detected
                         break;
-
                     }
                     else{
                          cout << "MIN 2 lines that are close to the center not detected!" << endl;
@@ -136,6 +175,7 @@ int main(){
     // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
     clockDetector.calculateTime(circlesResult, linesPResult);
     // Step 10: Display the original image with detected circles
+    clockDetector.calculateClockTime(circlesResult, linesPResult); //DZ testing
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
     return 0;

@@ -135,8 +135,22 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     }
 
     // get all the points for the hour and miunte hands
-    Point hourStart(hourHand[0], hourHand[1]);
-    Point hourEnd(hourHand[2], hourHand[3]);
+    Point hourStart;
+    Point hourEnd;
+    
+    if(norm(Point(hourHand[2], hourHand[3]) - center) > norm(Point(hourHand[0], hourHand[1]) - center)){
+        hourEnd = Point(hourHand[2], hourHand[3]);
+        hourStart = Point(hourHand[0], hourHand[1]);
+    }
+    else{
+        hourEnd = Point(hourHand[0], hourHand[1]);
+        hourStart = Point(hourHand[2], hourHand[3]);
+    }
+    // cout << "(1) Distance hourStart to center: " << norm(center - hourStart)<< endl;
+    // cout << "(2) Distance hourStart to center: " << norm(hourStart - center)<< endl;
+
+    // cout << "(1) Distance hourEnd to center: " << norm(center - hourEnd)<< endl;
+    // cout << "(2) Distance hourEnd to center: " << norm(hourEnd - center)<< endl;
 
     Point minuteStart(minuteHand[0], minuteHand[1]);
     Point minuteEnd(minuteHand[2], minuteHand[3]);
@@ -146,27 +160,48 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     // Calculate the lengths of the sides of the triangle
     double side1 = norm(center - topPoint);
-    double side2 = norm(center - hourStart);
-    double side3 = norm(hourStart - hourEnd);
+    // cout << "side1_hour: " << side1 << endl;
+    double side2 = norm(center - hourEnd);
+    // cout << "side2_hour: " << side2 << endl;
+    double side3 = norm(hourEnd - topPoint);
+    // cout << "side3_hour: " << side3 << endl;
 
     // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
     double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
+    cout << "cosine: " << cosine << endl;
+
 
     // Compute the angle from the cosine value (in radians)
     double angleInRadians = acos(cosine);
+    cout << "angleInRadians: " << angleInRadians << endl;
+
+
 
     // Convert the angle from radians to degrees
     double angleInDegrees = angleInRadians * 180.0 / CV_PI;
+    cout << "angleInDegrees: " << angleInDegrees << endl;
+
 
 
     // Determine the number of steps for the hour hand and the minute hand
-    double hourSteps = angleInDegrees / 30.0; // 30 degrees per hour and later 6 for minutes 
+    // double hourSteps = angleInDegrees / 6.0; 
+    // cout << "hourSteps: " << hourSteps << endl;
+    double hourSteps;
+    cout << "hourEnd.x: " << hourEnd.x << endl;
+    cout << "center.x: " << center.x << endl;
 
-    if (hourStart.x > center.x) {
-        hourSteps = hourSteps / 30.0; // Right side of the clock face
+    if (hourEnd.x > center.x) {
+        // hourSteps = hourSteps / 30.0; 
+        hourSteps = 6.0 * angleInDegrees / 180.0;
+        //mins = 30 * angleInDegrees / 180.0
+        cout << "Case 1: " << endl;
     } else {
-        hourSteps = (360.0 - hourSteps) / 30.0; // Left side of the clock face
+        hourSteps = 12 - (6.0 * angleInDegrees / 180.0);
+        // mins =  60 - 30 * angleInDegrees / 180.0
+        cout << "Case 2: " << endl;
     }
+    cout << "After Righ or left side hourSteps: " << hourSteps << endl;
+
 
     // Print out the steps for the hour hand and the minute hand
     cout << "Hour Hand Steps: " << hourSteps << endl;
@@ -174,18 +209,24 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     // again for the minute hand
     
     double side1_minute = norm(center - topPoint);
-    double side2_minute = norm(center - minuteStart);
-    double side3_minute = norm(minuteStart - minuteEnd);
+    double side2_minute = norm(center - minuteEnd);
+    double side3_minute = norm(minuteEnd - topPoint);
 
     double cosine_minute = (pow(side2_minute, 2) + pow(side1_minute, 2) - pow(side3_minute, 2)) / (2 * side2_minute * side1_minute);
     double angleInRadians_minute = acos(cosine_minute);
     double angleInDegrees_minute = angleInRadians_minute * 180.0 / CV_PI;
 
+    // double minuteSteps = angleInDegrees_minute / 30.0;
+    // cout << "minuteSteps: " << minuteSteps / 30.0 << endl;
     double minuteSteps;
-    if (minuteStart.x > center.x) {
-        minuteSteps = angleInDegrees_minute / 6.0;
+
+    if (minuteEnd.x > center.x) {
+        // minuteSteps = angleInDegrees_minute / 6.0;
+        minuteSteps = 30 * angleInDegrees_minute / 180.0;
     } else {
-        minuteSteps = (360.0 - angleInDegrees_minute);
+        // minuteSteps = (360.0 - angleInDegrees_minute) / 6.0;
+        minuteSteps = 60 - (30 * angleInDegrees_minute / 180.0);
+
     }
 
     cout << "Minute Hand Steps: " << minuteSteps << endl;
@@ -196,7 +237,8 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     int minute = static_cast<int>(minuteSteps);
 
     // Ensure within valid ranges
-    hour = (hour >= 0 && hour <= 11) ? hour : 0;
+    cout << "HOUR: " << hour << endl;
+    hour = (hour >= 0 && hour <= 12) ? hour : 0;
     minute = (minute >= 0 && minute <= 59) ? minute : 0;
 
     cout << "Time: " << hour << ":" << minute << endl;
@@ -223,6 +265,111 @@ vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& line
 
     return filteredLines;
 }
+
+//DZ testing
+void ClockDetection::calculateClockTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
+
+    // // Assuming the first circle detected represents the clock face
+    // Point center(cvRound(circles[0][0]), cvRound(circles[0][1]));
+
+    // cout <<"centers: " << circles[0][0] << " and " << circles[0][1] << endl;
+
+    // // Assuming the first two lines detected represent the hour and minute hands
+    // Vec4i hourHand = linesP[0];
+    // Vec4i minuteHand = linesP[1];
+    // cout << "hourHand: " << hourHand << endl;
+    // cout << "minuteHand: " << minuteHand << endl;
+
+    // //GET ANGLE BETWEEN HANDS
+    // // Calculate the vectors representing the hands
+    // Point hourVec(hourHand[2] - hourHand[0], hourHand[3] - hourHand[1]);
+    // Point minuteVec(minuteHand[2] - minuteHand[0], minuteHand[3] - minuteHand[1]);
+
+    // // Calculate the dot product of the vectors
+    // double dotProduct = hourVec.x * minuteVec.x + hourVec.y * minuteVec.y;
+
+    // // Calculate the magnitudes of the vectors
+    // double hourMagnitude = sqrt(hourVec.x * hourVec.x + hourVec.y * hourVec.y);
+    // double minuteMagnitude = sqrt(minuteVec.x * minuteVec.x + minuteVec.y * minuteVec.y);
+
+    // // Calculate the cosine of the angle between the vectors
+    // double cosAngle = dotProduct / (hourMagnitude * minuteMagnitude);
+
+    // // Calculate the angle in radians using the arccosine function
+    // double angleRadians = acos(cosAngle);
+
+    // // Convert the angle to degrees
+    // double angleDegrees = angleRadians * 180.0 / CV_PI;
+    // //END ANGLE BETWEEN HANDS
+
+    // //Laws of Cosines:
+    // double hourLength = sqrt(pow(hourHand[2] - hourHand[0], 2) + pow(hourHand[3] - hourHand[1], 2));
+    // double minLength = sqrt(pow(minuteHand[2] - minuteHand[0], 2) + pow(minuteHand[3] - minuteHand[1], 2));
+    // double hourSide = pow(hourLength, 2) + pow(minLength, 2) - (2*hourLength*minLength*cos(angleDegrees));
+
+    // double radHour = acos(hourLength);
+    // double radMin = acos(minLength);
+
+    // double degHour = radHour * 180 / CV_PI;
+    // double degMinute = radMin * 180 / CV_PI;
+
+    // Calculate the length of sides of the triangle formed by the hands and the center point
+    //double sideHour = sqrt(pow(hourHand[2] - hourHand[0], 2) + pow(hourHand[3] - hourHand[1], 2));
+    //double sideMinute = sqrt(pow(minuteHand[2] - minuteHand[0], 2) + pow(minuteHand[3] - minuteHand[1], 2));
+    //double sideRadius = sqrt(pow(center.x - hourHand[0], 2) + pow(center.y - hourHand[1], 2));
+
+    // Calculate the cosine of the angles between the hands and the center line
+    //double cosHour = (pow(sideRadius, 2) + pow(sideHour, 2) - pow(sideHour, 2)) / (2 * sideRadius * sideHour);
+    //double cosMinute = (pow(sideRadius, 2) + pow(sideMinute, 2) - pow(sideMinute, 2)) / (2 * sideRadius * sideMinute);
+
+    // Convert cosines to radians
+    //double radHour = acos(cosHour);
+    //double radMinute = acos(cosMinute);
+
+    // Convert radians to degrees
+    //double degHour = radHour * 180 / CV_PI;
+    //double degMinute = radMinute * 180 / CV_PI;
+
+
+    // Output the calculated time
+    //cout << "The time indicated by the clock is: " << hours << ":" << setw(2) << setfill('0') << minutes << endl;
+
+        // Assuming the first circle detected represents the clock face
+    // Assuming the first circle detected represents the clock face
+    // Assuming the first circle detected represents the clock face
+    // Assuming the first circle detected represents the clock face
+    Point center(cvRound(circles[0][0]), cvRound(circles[0][1]));
+
+    // Assuming the first two lines detected represent the hour and minute hands
+    Vec4i hourHand = linesP[0];
+    Vec4i minuteHand = linesP[1];
+
+    // Calculate the angle between the hour hand and the vertical (12 o'clock) position
+    double hourAngle = atan2(hourHand[1] - hourHand[3], hourHand[0] - hourHand[2]) * 180 / CV_PI;
+    if (hourAngle < 0) {
+        hourAngle += 360; // Adjust angle to be between 0 and 360 degrees
+    }
+
+    // Calculate the angle between the minute hand and the vertical (12 o'clock) position
+    double minuteAngle = atan2(minuteHand[1] - minuteHand[3], minuteHand[0] - minuteHand[2]) * 180 / CV_PI;
+    if (minuteAngle < 0) {
+        minuteAngle += 360; // Adjust angle to be between 0 and 360 degrees
+    }
+
+    // Calculate the hour and minute from the angles
+    int hours = static_cast<int>((hourAngle / 30) + 0.5); // Each hour is 30 degrees
+    int minutes = static_cast<int>((minuteAngle / 6) + 0.5); // Each minute is 6 degrees
+
+    // Adjust hours and minutes to be within 12-hour clock format
+    hours %= 12;
+    if (hours == 0) {
+        hours = 12;
+    }
+
+    // Output the calculated time in 12-hour format
+    cout << "The time is: " << hours << ":" << minutes << endl;
+}
+//END DZ TESTING
 
 
 

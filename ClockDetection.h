@@ -103,6 +103,8 @@ class ClockDetection {
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
        
+        //DREW TESTING new function
+        void calculateClockTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
 };
 
 #endif /* CLOCK_DETECTION_H */
