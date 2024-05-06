@@ -45,7 +45,7 @@ class ClockDetection {
         @param grayImage - Grayscale image
         @param circles - vector of Detected circles(center coordinates and radius)
        */
-       void drawDetectCirclesCopy(const vector<Vec3f> &circles, const cv::Mat& grayImage);
+       void drawDetectCirclesCopy(string name, const vector<Vec3f> &circles, const cv::Mat& grayImage);
 
        /*
        @brief apply edge detection using CANNY to an greyScale image.
@@ -71,7 +71,7 @@ class ClockDetection {
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectedStandardLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
+       void drawDetectedStandardLineCopy(string name, vector<Vec2f> &lines, const cv::Mat& grayImage);
 
 
         /*
@@ -88,18 +88,11 @@ class ClockDetection {
        */
        void drawDetectedProbabilisticLineCopy(string name, vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
-    //     /*
-    //     @brief the trigeometry used to compute the time 
-    //     @param circles - vector of Detected circles(center coordinates and radius)
-    //     @param lines - vector of Detected line
-    //    */
-    //    void calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
-
         /*
-        @brief 
-        @param
-        @param
-        @param
+        @brief Filters out the lines that are not close to the center 
+        @param lines - vector of Detected line(with endpoints)
+        @param center - the center Point of the detected circle 
+        @param distanceThreshold - integer distance theshold from the center 
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
        

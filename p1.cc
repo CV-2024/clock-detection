@@ -31,10 +31,10 @@ int main(){
 
 
     /*Agruments for Hough Circle Function*/
-    // int maxRadius = grayImage.cols;
-    int maxRadius = 200;
-    // int minDist = grayImage.cols;
-    int minDist = grayImage.rows / 8;
+    int maxRadius = grayImage.cols;
+    // int maxRadius = 200;
+    int minDist = grayImage.cols;
+    // int minDist = grayImage.rows / 8;
     int radius = 10;
     int param1 = 100; 
     int param2 = 30;
@@ -56,7 +56,7 @@ int main(){
         if (circles.size() > 0){
             cout << "Circles detected!" << endl;
             // Step 3a: Draw circles on the copy image 
-            clockDetector.drawDetectCirclesCopy(circles, grayImage);
+            clockDetector.drawDetectCirclesCopy("Detected Circle", circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
         
             // step 4: Use CANNY for line
@@ -72,7 +72,7 @@ int main(){
             //     // Draw detected lines from Use Standard Hough Line on the original image
             //     cout << "lines.size(): " << lines.size() << endl;
             //     cout << "MIN 2 lines detected!" << endl;
-            //     clockDetector.drawDetectedStandardLineCopy(lines, grayImage);
+            //     clockDetector.drawDetectedStandardLineCopy("standard Lines", lines, grayImage);
             //     clockDetector.drawDetectedStandardLine(lines, img);
             //     // Break the loop if both circles and lines are detected
             //     break;
@@ -134,7 +134,7 @@ int main(){
 
     cout << "Breaks" << endl;
     // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
-    // clockDetector.calculateTime(circlesResult, linesPResult); 
+    // ...
     // Step 10: Display the original image with detected circles
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
