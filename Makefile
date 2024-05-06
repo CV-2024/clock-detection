@@ -19,9 +19,9 @@ EXEC_DIR=.
 	g++ $(C++FLAG) $(INCLUDES)  -c $< -o $@
 
 # Include directories
-INCLUDES= -I. -I/usr/local/include/opencv4
+#INCLUDES= -I. -I/usr/local/include/opencv4 # EVERYONE ELSE USES THIS ONE
 #INCLUDES = -I. -I/mnt/c/Users/drewr/Desktop/clock-detection/usr/share/opencv4/include
-# INCLUDES = -I. -I/usr/include/opencv4
+ INCLUDES = -I. -I/usr/include/opencv4 # DREW USES THIS ONE
 
 # Libraries
 LIBS_ALL = -L/usr/lib -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_imgcodecs
@@ -52,43 +52,9 @@ clean:
 	(rm -f *.o;rm p1; rm p2)
 
 
-# ##MAKEFILE DREW USES ON WINDOWS#####
-# # Compiler and flags
-# CXX = g++
-# CXXFLAGS = -g -std=c++11
 
-# # Directories
-# SRC_DIR = .
-# BUILD_DIR = build
-# EXEC_DIR = .
-
-# # Include directories
-# INCLUDES = -I$(SRC_DIR) -I/home/drewr/Desktop/opencv/include/opencv4
-
-# # Libraries
-# LIBS_ALL = -LG:/opencv/x64/vc16/lib \
-#            -lopencv_core -lopencv_imgproc -lopencv_highgui \
-#            -lopencv_imgcodecs
-
-# # Program specifics
-# CPP_SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
-# OBJECTS = $(CPP_SOURCES:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
-# PROGRAM = main
-
-# # Build directory
-# $(shell mkdir -p $(BUILD_DIR))
-
-# # Object file rule
-# $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
-# 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
-
-# # Build program
-# $(EXEC_DIR)/$(PROGRAM): $(OBJECTS)
-# 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS_ALL)
-
-# # Default target
-# all: $(EXEC_DIR)/$(PROGRAM)
-
-# # Clean
-# clean:
-# 	$(RM) $(BUILD_DIR)/*.o $(EXEC_DIR)/$(PROGRAM)
+# // download: brew install opencv (for Mac)
+# // run:
+# // g++ -std=c++11 -I/usr/local/Cellar/opencv/4.9.0_7/include -I/usr/local/Cellar/opencv/4.9.0_7/include/opencv4 main.cc ClockDetection.cc -o main -lopencv_core -lopencv_imgcodecs -lopencv_highgui -lopencv_imgproc
+# // ./main
+# //Drew running on Windows with VcXsrv, type "export DISPLAY=localhost:0" no quotes to activate the XLaunche img viewer, then run program as normal: ./main

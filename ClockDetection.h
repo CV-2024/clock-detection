@@ -93,6 +93,10 @@ public:
     */
     std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
 
+        //DREW TESTING new function
+        void calculateClockTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
+
+
 };
 
 #endif /* CLOCK_DETECTION_H */

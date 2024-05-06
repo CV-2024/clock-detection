@@ -25,6 +25,12 @@ int main(){
     // Step 2: Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
 
+    // cout << "about to see gray image" << endl; //DZ TESTING
+    // imshow("Detected Circles", grayImage);
+    // int z = waitKey(0); // Wait for a keystroke in the window
+    // return 0;
+    // //DZ TESTING
+
     // result cirle and lines:
     vector<Vec3f> circlesResult;
     vector<Vec4i> linesPResult; 
@@ -92,6 +98,20 @@ int main(){
                 // Step 8: Saved that circle and line into resuls 
                     circlesResult = circles;
                     linesPResult = linesP; 
+
+
+
+                // Print out center coordinates detected for image input
+                for (const auto& circle : circles) {
+                    float x = circle[0];
+                    float y = circle[1];
+                    float radius = circle[2];
+                    std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
+                }
+                //DZ testing time print
+                clockDetector.calculateClockTime(circles, linesP); //DZ testing
+
+
                 // Break the loop if both circles and lines are detected
                 break;
             }
@@ -101,14 +121,15 @@ int main(){
                 radius++;
                 // continue;
             }
-
-            // Print out center coordinates detected for image input
-            for (const auto& circle : circles) {
-                float x = circle[0];
-                float y = circle[1];
-                float radius = circle[2];
-                std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
-            }
+            
+            //Drew moved into IF statement above on 5/4
+            // // Print out center coordinates detected for image input
+            // for (const auto& circle : circles) {
+            //     float x = circle[0];
+            //     float y = circle[1];
+            //     float radius = circle[2];
+            //     std::cout << "Center: (" << x << ", " << y << "), Radius: " << radius << std::endl;
+            // }
             
             // other steps ...
             // Break the loop if both circles and lines are detected
@@ -127,4 +148,5 @@ int main(){
     imshow("Detected Circles", img);
     int k = waitKey(0); // Wait for a keystroke in the window
     return 0;
+
 }
