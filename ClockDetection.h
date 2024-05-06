@@ -7,20 +7,19 @@
 using namespace std;
 using namespace cv;
 
-class ClockDetection {
-    private:
-        string image_path;
-        // vector<Vec3f> circles;
-        // Mat edges;
-    public:
-        // Default constructor
-        ClockDetection(const string& imagePath);
-        /*
-        @breif convert colored image to greyscale
-        @param const cv::Mat& - color image 
-        */
-        cv::Mat convertToGray(const cv::Mat& inputImage);
+class ClockDetection
+{
+private:
+    string image_path;
 
+public:
+    // Default constructor
+    ClockDetection(const string &imagePath);
+    /*
+    @breif convert colored image to greyscale
+    @param const cv::Mat& - color image
+    */
+    cv::Mat convertToGray(const cv::Mat &inputImage);
 
         /*
         @brief Detect circles in a grayscale image using Hough Circle Transformation
