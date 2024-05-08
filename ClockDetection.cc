@@ -24,7 +24,7 @@ vector<Vec3f> ClockDetection::detectCircles(const cv::Mat& grayImage, int dp, in
     return circles;
 }
 
-void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const cv::Mat& grayImage){
+void ClockDetection::drawDetectCirclesCopy(string name, const vector<Vec3f>& circles, const cv::Mat& grayImage){
     //DRAWS RED CIRCLE ON DETECTED CIRCLE:
     cv::Mat colorImage;
 
@@ -36,7 +36,7 @@ void ClockDetection::drawDetectCirclesCopy(const vector<Vec3f>& circles, const c
     }
 
     // //testing image output:
-    imshow("Draw Copy", colorImage);
+    imshow(name, colorImage);
     int n = waitKey(0); // Wait for a keystroke in the window
 }
 
@@ -109,6 +109,29 @@ void ClockDetection::drawDetectedProbabilisticLine(vector<Vec4i> &linesP, const 
         line(Image, Point(l[0], l[1]), Point(l[2], l[3]), Scalar(0,0,255), 3, LINE_AA);
     }
 }
+
+vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
+    vector<Vec4i> filteredLines;
+
+    // Iterate through each line and check if either endpoint is close to the center
+    for (const auto& line : lines) {
+        // endpoints 
+        Point pt1(line[0], line[1]); 
+        Point pt2(line[2], line[3]);
+
+        // Calculate distance from each endpoint to the center
+        double dist1 = norm(pt1 - center);
+        double dist2 = norm(pt2 - center);
+
+        // If either endpoint is close to the center, keep the line
+        if (dist1 < distanceThreshold || dist2 < distanceThreshold) {
+            filteredLines.push_back(line);
+        }
+    }
+
+    return filteredLines;
+}
+
 
 void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
     if (circles.empty() || linesP.empty()) {
@@ -241,135 +264,10 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     hour = (hour >= 0 && hour <= 12) ? hour : 0;
     minute = (minute >= 0 && minute <= 59) ? minute : 0;
 
-    cout << "Time: " << hour << ":" << minute << endl;
+    string minuteString = (minute < 10) ? "0" + to_string(minute) : to_string(minute);
+    cout << "Time: " << hour << ":" << minuteString << endl;
+
 }
-
-vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center,  int distanceThreshold){
-    vector<Vec4i> filteredLines;
-
-    // Iterate through each line and check if either endpoint is close to the center
-    for (const auto& line : lines) {
-        // endpoints 
-        Point pt1(line[0], line[1]); 
-        Point pt2(line[2], line[3]);
-
-        // Calculate distance from each endpoint to the center
-        double dist1 = norm(pt1 - center);
-        double dist2 = norm(pt2 - center);
-
-        // If either endpoint is close to the center, keep the line
-        if (dist1 < distanceThreshold || dist2 < distanceThreshold) {
-            filteredLines.push_back(line);
-        }
-    }
-
-    return filteredLines;
-}
-
-//DZ testing
-void ClockDetection::calculateClockTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
-
-    // // Assuming the first circle detected represents the clock face
-    // Point center(cvRound(circles[0][0]), cvRound(circles[0][1]));
-
-    // cout <<"centers: " << circles[0][0] << " and " << circles[0][1] << endl;
-
-    // // Assuming the first two lines detected represent the hour and minute hands
-    // Vec4i hourHand = linesP[0];
-    // Vec4i minuteHand = linesP[1];
-    // cout << "hourHand: " << hourHand << endl;
-    // cout << "minuteHand: " << minuteHand << endl;
-
-    // //GET ANGLE BETWEEN HANDS
-    // // Calculate the vectors representing the hands
-    // Point hourVec(hourHand[2] - hourHand[0], hourHand[3] - hourHand[1]);
-    // Point minuteVec(minuteHand[2] - minuteHand[0], minuteHand[3] - minuteHand[1]);
-
-    // // Calculate the dot product of the vectors
-    // double dotProduct = hourVec.x * minuteVec.x + hourVec.y * minuteVec.y;
-
-    // // Calculate the magnitudes of the vectors
-    // double hourMagnitude = sqrt(hourVec.x * hourVec.x + hourVec.y * hourVec.y);
-    // double minuteMagnitude = sqrt(minuteVec.x * minuteVec.x + minuteVec.y * minuteVec.y);
-
-    // // Calculate the cosine of the angle between the vectors
-    // double cosAngle = dotProduct / (hourMagnitude * minuteMagnitude);
-
-    // // Calculate the angle in radians using the arccosine function
-    // double angleRadians = acos(cosAngle);
-
-    // // Convert the angle to degrees
-    // double angleDegrees = angleRadians * 180.0 / CV_PI;
-    // //END ANGLE BETWEEN HANDS
-
-    // //Laws of Cosines:
-    // double hourLength = sqrt(pow(hourHand[2] - hourHand[0], 2) + pow(hourHand[3] - hourHand[1], 2));
-    // double minLength = sqrt(pow(minuteHand[2] - minuteHand[0], 2) + pow(minuteHand[3] - minuteHand[1], 2));
-    // double hourSide = pow(hourLength, 2) + pow(minLength, 2) - (2*hourLength*minLength*cos(angleDegrees));
-
-    // double radHour = acos(hourLength);
-    // double radMin = acos(minLength);
-
-    // double degHour = radHour * 180 / CV_PI;
-    // double degMinute = radMin * 180 / CV_PI;
-
-    // Calculate the length of sides of the triangle formed by the hands and the center point
-    //double sideHour = sqrt(pow(hourHand[2] - hourHand[0], 2) + pow(hourHand[3] - hourHand[1], 2));
-    //double sideMinute = sqrt(pow(minuteHand[2] - minuteHand[0], 2) + pow(minuteHand[3] - minuteHand[1], 2));
-    //double sideRadius = sqrt(pow(center.x - hourHand[0], 2) + pow(center.y - hourHand[1], 2));
-
-    // Calculate the cosine of the angles between the hands and the center line
-    //double cosHour = (pow(sideRadius, 2) + pow(sideHour, 2) - pow(sideHour, 2)) / (2 * sideRadius * sideHour);
-    //double cosMinute = (pow(sideRadius, 2) + pow(sideMinute, 2) - pow(sideMinute, 2)) / (2 * sideRadius * sideMinute);
-
-    // Convert cosines to radians
-    //double radHour = acos(cosHour);
-    //double radMinute = acos(cosMinute);
-
-    // Convert radians to degrees
-    //double degHour = radHour * 180 / CV_PI;
-    //double degMinute = radMinute * 180 / CV_PI;
-
-
-    // Output the calculated time
-    //cout << "The time indicated by the clock is: " << hours << ":" << setw(2) << setfill('0') << minutes << endl;
-
-        // Assuming the first circle detected represents the clock face
-    // Assuming the first circle detected represents the clock face
-    // Assuming the first circle detected represents the clock face
-    // Assuming the first circle detected represents the clock face
-    Point center(cvRound(circles[0][0]), cvRound(circles[0][1]));
-
-    // Assuming the first two lines detected represent the hour and minute hands
-    Vec4i hourHand = linesP[0];
-    Vec4i minuteHand = linesP[1];
-
-    // Calculate the angle between the hour hand and the vertical (12 o'clock) position
-    double hourAngle = atan2(hourHand[1] - hourHand[3], hourHand[0] - hourHand[2]) * 180 / CV_PI;
-    if (hourAngle < 0) {
-        hourAngle += 360; // Adjust angle to be between 0 and 360 degrees
-    }
-
-    // Calculate the angle between the minute hand and the vertical (12 o'clock) position
-    double minuteAngle = atan2(minuteHand[1] - minuteHand[3], minuteHand[0] - minuteHand[2]) * 180 / CV_PI;
-    if (minuteAngle < 0) {
-        minuteAngle += 360; // Adjust angle to be between 0 and 360 degrees
-    }
-
-    // Calculate the hour and minute from the angles
-    int hours = static_cast<int>((hourAngle / 30) + 0.5); // Each hour is 30 degrees
-    int minutes = static_cast<int>((minuteAngle / 6) + 0.5); // Each minute is 6 degrees
-
-    // Adjust hours and minutes to be within 12-hour clock format
-    hours %= 12;
-    if (hours == 0) {
-        hours = 12;
-    }
-
-    // Output the calculated time in 12-hour format
-    cout << "The time is: " << hours << ":" << minutes << endl;
-}
-//END DZ TESTING
 
 
 

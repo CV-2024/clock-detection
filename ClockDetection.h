@@ -45,7 +45,7 @@ class ClockDetection {
         @param grayImage - Grayscale image
         @param circles - vector of Detected circles(center coordinates and radius)
        */
-       void drawDetectCirclesCopy(const vector<Vec3f> &circles, const cv::Mat& grayImage);
+       void drawDetectCirclesCopy(string name, const vector<Vec3f> &circles, const cv::Mat& grayImage);
 
        /*
        @brief apply edge detection using CANNY to an greyScale image.
@@ -102,9 +102,6 @@ class ClockDetection {
         @param
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
-       
-        //DREW TESTING new function
-        void calculateClockTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
 };
 
 #endif /* CLOCK_DETECTION_H */

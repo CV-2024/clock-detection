@@ -8,8 +8,17 @@ using namespace cv;
 
 int main(){
     // Step 1: input image
-    string image_path = "data_analog_clocks/samples/2.jpg";
-    // string image_path = "data_analog_clocks/real_staright_images/fake_hands/1-00/10.jpg"; // with background 
+    string image_path = "data_analog_clocks/synthetic_straight_images/color/0.jpg";
+    // string image_path = "data_analog_clocks/synthetic_straight_images/color/5.jpg";
+    // string image_path = "data_analog_clocks/synthetic_straight_images/color/6.jpg";
+    // string image_path = "data_analog_clocks/synthetic_straight_images/color/13.jpg";
+    // string image_path = "data_analog_clocks/synthetic_straight_images/black_white/clock_minute_hand/samples/2_4_5.png";
+
+    // string image_path = "data_analog_clocks/synthetic_straight_images/color/9.jpg";
+
+
+    // string image_path = "data_analog_clocks/samples/3.jpg";
+    // string image_path = "data_analog_clocks/real_staright_images/fake_hands/1-00/10.jpg"; // works with greyscale images
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/0_3_07.pgm";
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/1_0_10.jpg";
     ClockDetection clockDetector(image_path);
@@ -24,13 +33,14 @@ int main(){
 
     // Step 2: Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
+    imshow("Input Image", img);
 
     // result cirle and lines:
     vector<Vec3f> circlesResult;
     vector<Vec4i> linesPResult; 
 
 
-    /*Agruments for Hough Circle Function*/
+    /*Agruments for Hough Circle Function*/ 
     int maxRadius = grayImage.cols;
     // int maxRadius = 200;
     int minDist = grayImage.cols;
@@ -45,7 +55,7 @@ int main(){
     int lowThreshold = 50;
     int highThreshold = 200; 
     int kernelSize = 3; 
-    bool L2gradient = true;
+    bool L2gradient = false;
 
     /*Parameters to filter if Close to teh center*/
     int distanceThreshold = 20; 
@@ -56,7 +66,8 @@ int main(){
         if (circles.size() > 0){
             cout << "Circles detected!" << endl;
             // Step 3a: Draw circles on the copy image 
-            clockDetector.drawDetectCirclesCopy(circles, grayImage);
+
+            clockDetector.drawDetectCirclesCopy("Circle Detected",circles, grayImage);
             clockDetector.drawDetectCircles(circles, img);
         
             // step 4: Use CANNY for line
@@ -129,7 +140,7 @@ int main(){
                         line(img, Point(minHand[0], minHand[1]), Point(minHand[2], minHand[3]), Scalar(0,255, 0), 3, LINE_AA);
 
                                         
-                        imshow("Detected Circles", img);
+                        imshow("Hour and Min Hands", img);
                         waitKey(0); // Wait for a keystroke in the window
                         hands.push_back(hourHand);
                         hands.push_back(minHand);
@@ -175,8 +186,7 @@ int main(){
     // step 9: Math using result circle and line( vector<Vec3f> circlesResult and vector<Vec4i> linesPResult)
     clockDetector.calculateTime(circlesResult, linesPResult);
     // Step 10: Display the original image with detected circles
-    clockDetector.calculateClockTime(circlesResult, linesPResult); //DZ testing
-    imshow("Detected Circles", img);
+    imshow("Output", img);
     int k = waitKey(0); // Wait for a keystroke in the window
     return 0;
 }
