@@ -147,23 +147,23 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     Vec3f circle = circles[0]; 
     Point center(circle[0], circle[1]);
 
-    Vec4i hourHand  = linesP[0];
-    Vec4i minuteHand = linesP[1];
+    // Vec4i hourHand  = linesP[0];
+    // Vec4i minuteHand = linesP[1];
 
     /* FIND THE HOUR AND MINUTE HANDS */
-        // Vec4i line1 = linesP[0];
-        // Vec4i line2 = linesP[1];
+        Vec4i line1 = linesP[0];
+        Vec4i line2 = linesP[1];
         // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
-        // Vec4i hourHand, minuteHand;
-        // // norm: : Calculates the Euclidean distance between the start and end points
-        // if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
-        //     norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
-        //     hourHand = line1;
-        //     minuteHand = line2;
-        // } else {
-        //     hourHand = line2;
-        //     minuteHand = line1;
-        // }
+        Vec4i hourHand, minuteHand;
+        // norm: : Calculates the Euclidean distance between the start and end points
+        if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
+            norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
+            hourHand = line1;
+            minuteHand = line2;
+        } else {
+            hourHand = line2;
+            minuteHand = line1;
+        }
 
     // Get all the points for the hour and miunte hands
     Point hourStart;
@@ -178,8 +178,22 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
         hourEnd = Point(hourHand[0], hourHand[1]);
         hourStart = Point(hourHand[2], hourHand[3]);
     }
+
+    
+
     Point minuteStart(minuteHand[0], minuteHand[1]);
     Point minuteEnd(minuteHand[2], minuteHand[3]);
+
+     if(norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center)){
+        minuteEnd = Point(minuteHand[2], minuteHand[3]);
+        minuteStart = Point(minuteHand[0], minuteHand[1]);
+    }
+    else{
+        minuteEnd = Point(minuteHand[0], minuteHand[1]);
+        minuteStart = Point(minuteHand[2], minuteHand[3]);
+    }
+
+
 
 
 
@@ -255,7 +269,6 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     cout << "Time: " << hour << ":" << minuteString << endl;
 
 }
-
 
 std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &grayImage)
 {
