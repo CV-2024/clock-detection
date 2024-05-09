@@ -20,7 +20,6 @@ int main()
         cout << "Could not read the image: " << image_path << endl;
         return 1;
     }
-
     // Convert the input image to grayscale
     Mat grayImage = clockDetector.convertToGray(img);
 

@@ -7,19 +7,20 @@
 using namespace std;
 using namespace cv;
 
-class ClockDetection
-{
-private:
-    string image_path;
+class ClockDetection {
+    private:
+        string image_path;
+        // vector<Vec3f> circles;
+        // Mat edges;
+    public:
+        // Default constructor
+        ClockDetection(const string& imagePath);
+        /*
+        @breif convert colored image to greyscale
+        @param const cv::Mat& - color image 
+        */
+        cv::Mat convertToGray(const cv::Mat& inputImage);
 
-public:
-    // Default constructor
-    ClockDetection(const string &imagePath);
-    /*
-    @breif convert colored image to greyscale
-    @param const cv::Mat& - color image
-    */
-    cv::Mat convertToGray(const cv::Mat &inputImage);
 
         /*
         @brief Detect circles in a grayscale image using Hough Circle Transformation
@@ -29,6 +30,7 @@ public:
         @param param1 - a ingter that is the higher threshold,for HOUGH_GRADIENT. The lower threshold is twice smaller.
         @param param2 - a ingter that is the accumulator threshold for the circle centers at the detection stage.
         @param minRadius - Minimum radius to start the search
+        @param maxRadius - Max radius to start the search
         @return Detected circles (center coordinates and radius)
         */
        vector<Vec3f> detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius);
@@ -57,6 +59,17 @@ public:
        */
        void edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient);
 
+        /*
+        @brief apply  Probabilistic Hough Line Transform to detect lines 
+        @param edges - The input binary image where edges are detected. 
+        @param linesP - the output vector if decteded lines 
+        @param rho - the distance resolution in pixels of the Hough accumulator array or the steps
+        @param theta -  It is the angle resolution in radians of the Hough accumulator array or the step
+        @param threshold - local maxima or the minimum number of intersections in the Hough space to detect a line.
+        @param minLineLength - min length of the detected line 
+        @param maxLineGap -  max the gap between line segments
+        */
+        void houghLinesP(const Mat& edges,  vector<Vec4i>& linesP, int rho, double theta, int threshold, int minLineLength, int maxLineGap);
 
         /*
         @brief Draw the Standard line on the passed image directly
@@ -70,7 +83,7 @@ public:
         @param grayImage - Grayscale image
         @param lines - vector of Detected line(with endpoints)
        */
-       void drawDetectedStandardLineCopy(string name, vector<Vec2f> &lines, const cv::Mat& grayImage);
+       void drawDetectedStandardLineCopy(vector<Vec2f> &lines, const cv::Mat& grayImage);
 
 
         /*
@@ -88,13 +101,30 @@ public:
        void drawDetectedProbabilisticLineCopy(string name, vector<Vec4i> &linesP, const cv::Mat& grayImage);
 
         /*
+        @brief the trigeometry used to compute the time 
+        @param circles - vector of Detected circles(center coordinates and radius)
+        @param lines - vector of Detected line
+       */
+       void calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
+
+        /*
         @brief Filters out the lines that are not close to the center 
         @param lines - vector of Detected line(with endpoints)
         @param center - the center Point of the detected circle 
         @param distanceThreshold - integer distance theshold from the center 
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
-       
+
+       /*
+    @brief Detect ellipse in a grayscale image
+    @param const cv::Mat& - grayscale image
+    @return vector<cv::Vec3f> - detected ellipse (center coordinates and radius)
+    */
+    std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
+
+
+
+
 };
 
 #endif /* CLOCK_DETECTION_H */
