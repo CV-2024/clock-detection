@@ -326,4 +326,3 @@ std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &g
     waitKey(0);
     return std::make_tuple(center, radiusX, radiusY);
 }
-
