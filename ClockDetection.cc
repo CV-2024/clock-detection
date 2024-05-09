@@ -255,3 +255,62 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     cout << "Time: " << hour << ":" << minuteString << endl;
 
 }
+
+
+std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &grayImage)
+{
+    // Detect edges using Canny edge detector
+    Mat edges;
+    // params: image, edges array, threshold1, threshold2
+    Canny(grayImage, edges, 50, 150);
+
+    // Find contours
+    vector<vector<Point>> contours;
+    // params: image, output contours, mode, method
+    findContours(edges, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE); // returns a modified image
+
+    // Filter contours based on area or other criteria
+    vector<Point> largestContour;
+    double maxArea = 0;
+    for (const auto &contour : contours)
+    {
+        double area = contourArea(contour); // Computes Area of the contours
+        // Finds max area
+        if (area > maxArea)
+        {
+            maxArea = area;
+            largestContour = contour;
+        }
+    }
+
+    // Approximate contour to reduce the number of points
+    vector<Point> approx;
+    double epsilon = 0.01 * arcLength(largestContour, true);
+    // params: array of curves, output array, epsilon, bool closed or not
+    approxPolyDP(largestContour, approx, epsilon, true);
+
+    // Fits an ellipse around a set of 2D points.
+    // params: input array of points
+    RotatedRect ellipse = fitEllipse(approx);
+
+    // Convert grayscale image to BGR
+    Mat resultBGR;
+    cvtColor(grayImage, resultBGR, COLOR_GRAY2BGR);
+
+    // Draw ellipse on the grayscale image
+    cv::ellipse(resultBGR, ellipse, Scalar(0, 255, 0), 2);
+
+    // Get center and radii of the ellipse
+    Point2f center = ellipse.center;
+    float radiusX = ellipse.size.width / 2;
+    float radiusY = ellipse.size.height / 2;
+
+    // Draw red dot at the center of the ellipse
+    circle(resultBGR, center, 5, Scalar(0, 0, 255), -1); // -1 indicates filled circle
+
+    // Show the result
+    imshow("Detected Ellipse", resultBGR);
+    waitKey(0);
+    return std::make_tuple(center, radiusX, radiusY);
+}
+

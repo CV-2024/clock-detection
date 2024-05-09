@@ -114,6 +114,17 @@ class ClockDetection {
         @param distanceThreshold - integer distance theshold from the center 
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
+
+       /*
+    @brief Detect ellipse in a grayscale image
+    @param const cv::Mat& - grayscale image
+    @return vector<cv::Vec3f> - detected ellipse (center coordinates and radius)
+    */
+    std::tuple<Point2f, float, float> detectEllipse(const cv::Mat &grayImage);
+
+
+
+
 };
 
 #endif /* CLOCK_DETECTION_H */
