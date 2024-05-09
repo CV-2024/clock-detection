@@ -49,6 +49,7 @@ void ClockDetection::drawDetectCircles(const vector<Vec3f> &circles, const cv::M
 }
 
 void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient){
+    
     Canny(grayImage, detectedEdges, lowThreshold, highThreshold, kernelSize, L2gradient);
 }
 
@@ -254,6 +255,3 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     cout << "Time: " << hour << ":" << minuteString << endl;
 
 }
-
-
-
