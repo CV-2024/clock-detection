@@ -187,8 +187,7 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
      if(norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center)){
         minuteEnd = Point(minuteHand[2], minuteHand[3]);
         minuteStart = Point(minuteHand[0], minuteHand[1]);
-    }
-    else{
+      else{
         minuteEnd = Point(minuteHand[0], minuteHand[1]);
         minuteStart = Point(minuteHand[2], minuteHand[3]);
     }
