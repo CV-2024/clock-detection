@@ -8,21 +8,20 @@ using namespace cv;
 
 int main(){
     // Step 1: input image
-    string image_path = "data_analog_clocks/synthetic_straight_images/color/0.jpg";
+
+    // Create the Input Image Here
+    string image_path = "data_analog_clocks/sucess/9.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/5.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/6.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/13.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/black_white/clock_minute_hand/samples/2_4_5.png";
-
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/9.jpg";
-
-
     // string image_path = "data_analog_clocks/samples/3.jpg";
     // string image_path = "data_analog_clocks/real_staright_images/fake_hands/1-00/10.jpg"; // works with greyscale images
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/0_3_07.pgm";
     // string image_path = "data_analog_clocks/real_staright_images/real_hands/no_background/1_0_10.jpg";
-    ClockDetection clockDetector(image_path);
 
+    ClockDetection clockDetector(image_path);
     Mat img = imread(image_path, IMREAD_COLOR);
 
     if (img.empty())
@@ -35,30 +34,37 @@ int main(){
     Mat grayImage = clockDetector.convertToGray(img);
     imshow("Input Image", img);
 
-    // result cirle and lines:
+    // Result cirle and two lines to feed to the math function:
     vector<Vec3f> circlesResult;
     vector<Vec4i> linesPResult; 
 
 
-    /*Agruments for Hough Circle Function*/ 
-    int maxRadius = grayImage.cols;
-    // int maxRadius = 200;
-    int minDist = grayImage.cols;
-    // int minDist = grayImage.rows / 8;
-    int radius = 10;
-    int param1 = 100; 
-    int param2 = 30;
-    int dp = 1; // the steps for resolution
+    /* Agruments for Hough Circle Function */ 
+        int maxRadius = grayImage.cols;
+        // int maxRadius = 200;
+        int minDist = grayImage.cols;
+        // int minDist = grayImage.rows / 8;
+        int radius = 10;
+        int param1 = 100; 
+        int param2 = 30;
+        int dp = 1; // the steps for resolution
 
 
-    /*Agruments for Canyy edge detection Function*/
-    int lowThreshold = 50;
-    int highThreshold = 200; 
-    int kernelSize = 3; 
-    bool L2gradient = false;
+    /* Agruments for Canyy edge detection Function  */
+        int lowThreshold = 50;
+        int highThreshold = 200; 
+        int kernelSize = 3; 
+        bool L2gradient = true;
 
-    /*Parameters to filter if Close to teh center*/
-    int distanceThreshold = 20; 
+     /* Agruments for  Probabilistic Hough Line Transform to detect lines*/
+        int rho = 1;
+        double theta = CV_PI/180;
+        int threshold = 50;
+        int minLineLength = 50;
+        int maxLineGap = 10;
+
+    /* Parameters to filter if Close to teh center */
+        int distanceThreshold = 20; 
 
     while (true){
         // Step 3: Detect circles with Hough Circle 
@@ -72,7 +78,9 @@ int main(){
         
             // step 4: Use CANNY for line
             Mat edges;
-            clockDetector.edgeDetection(grayImage, edges, lowThreshold, highThreshold, kernelSize, L2gradient);
+            // clockDetector.edgeDetection(grayImage, edges, lowThreshold, highThreshold, kernelSize, L2gradient); // greyImage to Canny 
+            clockDetector.edgeDetection(img, edges, lowThreshold, highThreshold, kernelSize, L2gradient); // color to Canny to Canny 
+
             imshow("cannyOutput", edges);
 
             // // Step 5: Use Standard Hough Line Transform to detect lines 
@@ -92,7 +100,9 @@ int main(){
             // Step 5: Use Probabilistic Hough Line Transform to detect lines 
             vector<Vec4i> linesP; 
             // Step 6: Draw detected lines from Use Probabilistic Hough Line on the original image
-            HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
+            // HoughLinesP(edges, linesP, 1, CV_PI/180, 50, 50, 10 );
+            clockDetector.houghLinesP(edges, linesP, rho, theta, threshold, minLineLength, maxLineGap);
+
             if (linesP.size() >= 2){
                 cout << "linesP.size(): " << linesP.size() << endl;
                 cout << "MIN 2 lines detected!" << endl;

@@ -31,18 +31,25 @@ LIBS_ALL = -L/usr/lib -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_h
 Cpp_OBJ_P1=ClockDetection.o p1.o
 PROGRAM_1=p1
 
+Cpp_OBJ_P2=ClockDetection.o p2.o
+PROGRAM_2=p2
+
 
 # Build program
 $(PROGRAM_1): $(Cpp_OBJ_P1)
 	g++ $(C++FLAG) -o $(EXEC_DIR)/$@ $(Cpp_OBJ_P1) $(INCLUDES) $(LIBS_ALL)
 
+$(PROGRAM_2): $(Cpp_OBJ_P2)
+	g++ $(C++FLAG) -o $(EXEC_DIR)/$@ $(Cpp_OBJ_P2) $(INCLUDES) $(LIBS_ALL)
+
 # Default target
 all: 
 	make $(PROGRAM_1)
+	make $(PROGRAM_2)
 
 # Clean
 clean:
-	(rm -f *.o;rm p1)
+	(rm -f *.o;rm p1; rm p2)
 
 
 # ##MAKEFILE DREW USES ON WINDOWS#####

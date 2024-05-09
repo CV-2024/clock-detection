@@ -30,6 +30,7 @@ class ClockDetection {
         @param param1 - a ingter that is the higher threshold,for HOUGH_GRADIENT. The lower threshold is twice smaller.
         @param param2 - a ingter that is the accumulator threshold for the circle centers at the detection stage.
         @param minRadius - Minimum radius to start the search
+        @param maxRadius - Max radius to start the search
         @return Detected circles (center coordinates and radius)
         */
        vector<Vec3f> detectCircles(const cv::Mat& grayImage, int dp, int param1, int param2, int minDist, int minRadius, int maxRadius);
@@ -58,6 +59,17 @@ class ClockDetection {
        */
        void edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEdges, int lowThreshold, int highThreshold, int kernelSize, bool L2gradient);
 
+        /*
+        @brief apply  Probabilistic Hough Line Transform to detect lines 
+        @param edges - The input binary image where edges are detected. 
+        @param linesP - the output vector if decteded lines 
+        @param rho - the distance resolution in pixels of the Hough accumulator array or the steps
+        @param theta -  It is the angle resolution in radians of the Hough accumulator array or the step
+        @param threshold - local maxima or the minimum number of intersections in the Hough space to detect a line.
+        @param minLineLength - min length of the detected line 
+        @param maxLineGap -  max the gap between line segments
+        */
+        void houghLinesP(const Mat& edges,  vector<Vec4i>& linesP, int rho, double theta, int threshold, int minLineLength, int maxLineGap);
 
         /*
         @brief Draw the Standard line on the passed image directly
@@ -96,10 +108,10 @@ class ClockDetection {
        void calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP);
 
         /*
-        @brief 
-        @param
-        @param
-        @param
+        @brief Filters out the lines that are not close to the center 
+        @param lines - vector of Detected line(with endpoints)
+        @param center - the center Point of the detected circle 
+        @param distanceThreshold - integer distance theshold from the center 
         */
        vector<Vec4i> filterLinesCloseToCenter(const vector<Vec4i>& lines, const Point& center, int distanceThreshold);
 };

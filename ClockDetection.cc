@@ -52,6 +52,10 @@ void ClockDetection::edgeDetection(const cv::Mat& grayImage, cv::Mat& detectedEd
     Canny(grayImage, detectedEdges, lowThreshold, highThreshold, kernelSize, L2gradient);
 }
 
+void ClockDetection::houghLinesP(const Mat& edges,  vector<Vec4i>& linesP, int rho, double theta, int threshold,  int minLineLength, int maxLineGap){
+    cv::HoughLinesP(edges, linesP, rho, theta, threshold, minLineLength, maxLineGap);
+}
+
 void ClockDetection::drawDetectedStandardLineCopy(vector<Vec2f>& lines, const cv::Mat& grayImage){
     cv::Mat colorImage;
 
@@ -132,7 +136,6 @@ vector<Vec4i> ClockDetection::filterLinesCloseToCenter(const vector<Vec4i>& line
     return filteredLines;
 }
 
-
 void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Vec4i>& linesP) {
     if (circles.empty() || linesP.empty()) {
         cout << "Error: No circle or line detected!" << endl;
@@ -142,25 +145,30 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     // Extract circle and line information
     Vec3f circle = circles[0]; 
     Point center(circle[0], circle[1]);
-    Vec4i line1 = linesP[0];
-    Vec4i line2 = linesP[1];
 
-    // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
-    Vec4i hourHand, minuteHand;
-    // norm: : Calculates the Euclidean distance between the start and end points
-    if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
-        norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
-        hourHand = line1;
-        minuteHand = line2;
-    } else {
-        hourHand = line2;
-        minuteHand = line1;
-    }
+    Vec4i hourHand  = linesP[0];
+    Vec4i minuteHand = linesP[1];
 
-    // get all the points for the hour and miunte hands
+    /* FIND THE HOUR AND MINUTE HANDS */
+        // Vec4i line1 = linesP[0];
+        // Vec4i line2 = linesP[1];
+        // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
+        // Vec4i hourHand, minuteHand;
+        // // norm: : Calculates the Euclidean distance between the start and end points
+        // if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
+        //     norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
+        //     hourHand = line1;
+        //     minuteHand = line2;
+        // } else {
+        //     hourHand = line2;
+        //     minuteHand = line1;
+        // }
+
+    // Get all the points for the hour and miunte hands
     Point hourStart;
     Point hourEnd;
     
+    // Determine which point is the start and end 
     if(norm(Point(hourHand[2], hourHand[3]) - center) > norm(Point(hourHand[0], hourHand[1]) - center)){
         hourEnd = Point(hourHand[2], hourHand[3]);
         hourStart = Point(hourHand[0], hourHand[1]);
@@ -169,14 +177,10 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
         hourEnd = Point(hourHand[0], hourHand[1]);
         hourStart = Point(hourHand[2], hourHand[3]);
     }
-    // cout << "(1) Distance hourStart to center: " << norm(center - hourStart)<< endl;
-    // cout << "(2) Distance hourStart to center: " << norm(hourStart - center)<< endl;
-
-    // cout << "(1) Distance hourEnd to center: " << norm(center - hourEnd)<< endl;
-    // cout << "(2) Distance hourEnd to center: " << norm(hourEnd - center)<< endl;
-
     Point minuteStart(minuteHand[0], minuteHand[1]);
     Point minuteEnd(minuteHand[2], minuteHand[3]);
+
+
 
     // the x-axis at the top of the image
     Point topPoint(center.x, 0);
@@ -204,32 +208,19 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     double angleInDegrees = angleInRadians * 180.0 / CV_PI;
     cout << "angleInDegrees: " << angleInDegrees << endl;
 
-
-
     // Determine the number of steps for the hour hand and the minute hand
-    // double hourSteps = angleInDegrees / 6.0; 
-    // cout << "hourSteps: " << hourSteps << endl;
     double hourSteps;
-    cout << "hourEnd.x: " << hourEnd.x << endl;
-    cout << "center.x: " << center.x << endl;
-
     if (hourEnd.x > center.x) {
-        // hourSteps = hourSteps / 30.0; 
         hourSteps = 6.0 * angleInDegrees / 180.0;
-        //mins = 30 * angleInDegrees / 180.0
-        cout << "Case 1: " << endl;
     } else {
         hourSteps = 12 - (6.0 * angleInDegrees / 180.0);
-        // mins =  60 - 30 * angleInDegrees / 180.0
-        cout << "Case 2: " << endl;
     }
-    cout << "After Righ or left side hourSteps: " << hourSteps << endl;
 
 
     // Print out the steps for the hour hand and the minute hand
     cout << "Hour Hand Steps: " << hourSteps << endl;
 
-    // again for the minute hand
+    // Again, but for the minute hand
     
     double side1_minute = norm(center - topPoint);
     double side2_minute = norm(center - minuteEnd);
@@ -239,21 +230,15 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     double angleInRadians_minute = acos(cosine_minute);
     double angleInDegrees_minute = angleInRadians_minute * 180.0 / CV_PI;
 
-    // double minuteSteps = angleInDegrees_minute / 30.0;
-    // cout << "minuteSteps: " << minuteSteps / 30.0 << endl;
     double minuteSteps;
 
     if (minuteEnd.x > center.x) {
-        // minuteSteps = angleInDegrees_minute / 6.0;
         minuteSteps = 30 * angleInDegrees_minute / 180.0;
     } else {
-        // minuteSteps = (360.0 - angleInDegrees_minute) / 6.0;
         minuteSteps = 60 - (30 * angleInDegrees_minute / 180.0);
-
     }
 
     cout << "Minute Hand Steps: " << minuteSteps << endl;
-
 
     // Compute the time based on the calculated steps for the hour and minute hands
     int hour = static_cast<int>(hourSteps);
@@ -264,6 +249,7 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     hour = (hour >= 0 && hour <= 12) ? hour : 0;
     minute = (minute >= 0 && minute <= 59) ? minute : 0;
 
+    // if it single digit minute add a 0
     string minuteString = (minute < 10) ? "0" + to_string(minute) : to_string(minute);
     cout << "Time: " << hour << ":" << minuteString << endl;
 
