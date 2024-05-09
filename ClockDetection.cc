@@ -184,7 +184,7 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
     Point minuteStart(minuteHand[0], minuteHand[1]);
     Point minuteEnd(minuteHand[2], minuteHand[3]);
 
-     if(norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center)){
+    if(norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center)){
         minuteEnd = Point(minuteHand[2], minuteHand[3]);
         minuteStart = Point(minuteHand[0], minuteHand[1]);
     }
@@ -192,8 +192,6 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
         minuteEnd = Point(minuteHand[0], minuteHand[1]);
         minuteStart = Point(minuteHand[2], minuteHand[3]);
     }
-
-
 
 
 
@@ -210,18 +208,18 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
     // Apply the law of cosines to calculate the cosine of the angle between center line and the watch hand line. 
     double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
-    cout << "cosine: " << cosine << endl;
+    // cout << "cosine: " << cosine << endl;
 
 
     // Compute the angle from the cosine value (in radians)
     double angleInRadians = acos(cosine);
-    cout << "angleInRadians: " << angleInRadians << endl;
+    // cout << "angleInRadians: " << angleInRadians << endl;
 
 
 
     // Convert the angle from radians to degrees
     double angleInDegrees = angleInRadians * 180.0 / CV_PI;
-    cout << "angleInDegrees: " << angleInDegrees << endl;
+    // cout << "angleInDegrees: " << angleInDegrees << endl;
 
     // Determine the number of steps for the hour hand and the minute hand
     double hourSteps;
@@ -233,7 +231,7 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
 
 
     // Print out the steps for the hour hand and the minute hand
-    cout << "Hour Hand Steps: " << hourSteps << endl;
+    // cout << "Hour Hand Steps: " << hourSteps << endl;
 
     // Again, but for the minute hand
     
@@ -253,14 +251,14 @@ void ClockDetection::calculateTime(const vector<Vec3f>& circles, const vector<Ve
         minuteSteps = 60 - (30 * angleInDegrees_minute / 180.0);
     }
 
-    cout << "Minute Hand Steps: " << minuteSteps << endl;
+    // cout << "Minute Hand Steps: " << minuteSteps << endl;
 
     // Compute the time based on the calculated steps for the hour and minute hands
     int hour = static_cast<int>(hourSteps);
     int minute = static_cast<int>(minuteSteps);
 
     // Ensure within valid ranges
-    cout << "HOUR: " << hour << endl;
+    // cout << "HOUR: " << hour << endl;
     hour = (hour >= 0 && hour <= 12) ? hour : 0;
     minute = (minute >= 0 && minute <= 59) ? minute : 0;
 
