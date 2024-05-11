@@ -12,7 +12,8 @@ Program_1 p1:
     General Descrition: 
         Gemeatric approah to read a the time of an Analogy clock. Used this paper was a starting point: https://www.diva-portal.org/smash/get/diva2:1668098/FULLTEXT02
     
-    Dataset: Test / works best on the  "data_analog_clocks/synthetic_straight_images/color" images 
+    Dataset: Test / works best on the  "data_analog_clocks/synthetic_straight_images/color" images. 
+        link: https://www.kaggle.com/account/login?titleType=dataset-downloads&showDatasetDownloadSkip=False&messageId=datasetsWelcome&returnUrl=%2Fdatasets%2Fshivajbd%2Fanalog-clocks%2Fversions%2F1%3Fresource%3Ddownload
 
     Important Arguments for built-in openCV Functions:
         Agruments for Hough Circle Function:
@@ -50,7 +51,7 @@ Program_1 p1:
 
             rho = 1
             theta = CV_PI/180
-            threshold = 50
+            threshold = 10
             minLineLength = 10
             maxLineGap = 50
 

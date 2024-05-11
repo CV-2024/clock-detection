@@ -10,8 +10,10 @@ int main(){
     // Step 1: input image
 
     // Create the Input Image Here
-    string image_path = "data_analog_clocks/sucess/9.jpg";
-    // string image_path = "data_analog_clocks/synthetic_straight_images/color/5.jpg";
+    // string image_path = "data_analog_clocks/sucess/9.jpg";
+    // 1, 4, 5, 6
+    // ask about "data_analog_clocks/synthetic_straight_images/color/3.jpg" and "data_analog_clocks/synthetic_straight_images/color/10.jpg";
+    string image_path = "data_analog_clocks/synthetic_straight_images/color/1.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/6.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/color/13.jpg";
     // string image_path = "data_analog_clocks/synthetic_straight_images/black_white/clock_minute_hand/samples/2_4_5.png";
@@ -59,7 +61,7 @@ int main(){
      /* Agruments for  Probabilistic Hough Line Transform to detect lines*/
         int rho = 1;
         double theta = CV_PI/180;
-        int threshold = 50;
+        int threshold = 10;
         int minLineLength = 50;
         int maxLineGap = 10;
 
