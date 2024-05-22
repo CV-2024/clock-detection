@@ -170,19 +170,22 @@ void ClockDetection::calculateTime(const vector<Vec3f> &circles, const vector<Ve
     // Vec4i minuteHand = linesP[1];
 
     /* FIND THE HOUR AND MINUTE HANDS */
-        Vec4i line1 = linesP[0];
-        Vec4i line2 = linesP[1];
-        // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
-        Vec4i hourHand, minuteHand;
-        // norm: : Calculates the Euclidean distance between the start and end points
-        if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) < 
-            norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3]))) {
-            hourHand = line1;
-            minuteHand = line2;
-        } else {
-            hourHand = line2;
-            minuteHand = line1;
-        }
+    Vec4i line1 = linesP[0];
+    Vec4i line2 = linesP[1];
+    // Identify which line corresponds to the hour hand and which one corresponds to the minute hand
+    Vec4i hourHand, minuteHand;
+    // norm: : Calculates the Euclidean distance between the start and end points
+    if (norm(Point(line1[0], line1[1]) - Point(line1[2], line1[3])) <
+        norm(Point(line2[0], line2[1]) - Point(line2[2], line2[3])))
+    {
+        hourHand = line1;
+        minuteHand = line2;
+    }
+    else
+    {
+        hourHand = line2;
+        minuteHand = line1;
+    }
 
     // Get all the points for the hour and miunte hands
     Point hourStart;
@@ -200,21 +203,19 @@ void ClockDetection::calculateTime(const vector<Vec3f> &circles, const vector<Ve
         hourStart = Point(hourHand[2], hourHand[3]);
     }
 
-    
-
     Point minuteStart(minuteHand[0], minuteHand[1]);
     Point minuteEnd(minuteHand[2], minuteHand[3]);
 
-    if(norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center)){
+    if (norm(Point(minuteHand[2], minuteHand[3]) - center) > norm(Point(minuteHand[0], minuteHand[1]) - center))
+    {
         minuteEnd = Point(minuteHand[2], minuteHand[3]);
         minuteStart = Point(minuteHand[0], minuteHand[1]);
     }
-    else{
+    else
+    {
         minuteEnd = Point(minuteHand[0], minuteHand[1]);
         minuteStart = Point(minuteHand[2], minuteHand[3]);
     }
-
-
 
     // the x-axis at the top of the image
     Point topPoint(center.x, 0);
@@ -231,12 +232,9 @@ void ClockDetection::calculateTime(const vector<Vec3f> &circles, const vector<Ve
     double cosine = (pow(side2, 2) + pow(side1, 2) - pow(side3, 2)) / (2 * side2 * side1);
     // cout << "cosine: " << cosine << endl;
 
-
     // Compute the angle from the cosine value (in radians)
     double angleInRadians = acos(cosine);
     // cout << "angleInRadians: " << angleInRadians << endl;
-
-
 
     // Convert the angle from radians to degrees
     double angleInDegrees = angleInRadians * 180.0 / CV_PI;
@@ -334,10 +332,8 @@ std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &g
     Point2f center = ellipse.center;
     float radiusX = ellipse.size.width / 2;
     float radiusY = ellipse.size.height / 2;
-    return std::make_tuple(center, radiusX, radiusY);
 
     // Convert grayscale image to BGR
-    /*
     Mat resultBGR;
     cvtColor(grayImage, resultBGR, COLOR_GRAY2BGR);
 
@@ -347,8 +343,9 @@ std::tuple<Point2f, float, float> ClockDetection::detectEllipse(const cv::Mat &g
     // Draw red dot at the center of the ellipse
     circle(resultBGR, center, 5, Scalar(0, 0, 255), -1); // -1 indicates filled circle
 
-    Show the result
+    // Show the result
     imshow("Detected Ellipse", resultBGR);
     waitKey(0);
-    */
+
+    return std::make_tuple(center, radiusX, radiusY);
 }
